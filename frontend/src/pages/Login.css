@@ -1,0 +1,222 @@
+.login-container {
+  font-family: Poppins, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  width: 100%;
+  transition: background 0.5s ease; /* Hiệu ứng chuyển màu nền mượt */
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-box-pa {
+  padding: 30px 40px;
+  background-color: #cccccc4a;
+  border-radius: 20px;
+  margin-top: 60px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng scale và shadow */
+}
+
+.login-box-pa:hover {
+  transform: translateY(-5px); /* Nâng nhẹ khi hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Tăng shadow khi hover */
+}
+
+.login-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 300px;
+  transition: transform 0.3s ease; /* Hiệu ứng scale mượt */
+}
+
+.login-box:hover {
+  transform: scale(1.02); /* Phóng to nhẹ khi hover */
+}
+
+.login-box h2 {
+  color: #4a3c8c;
+  font-size: 28px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  margin-top: 0;
+  transition: color 0.3s ease; /* Hiệu ứng chuyển màu chữ */
+}
+
+.login-box h2:hover {
+  color: #6b5b95; /* Đổi màu nhẹ khi hover */
+}
+
+.welcome-text {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  opacity: 0; /* Hiệu ứng fade-in */
+  animation: fadeIn 1s ease-in forwards; /* Animation xuất hiện */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.google-btn {
+  background: #fff;
+  border: 1px solid #d3d3d3;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.google-btn:hover {
+  border-color: #a084ca;
+  background: #f8f9fa; /* Đổi nền nhẹ khi hover */
+  transform: translateY(-2px); /* Nâng nhẹ khi hover */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Thêm shadow */
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  vertical-align: middle;
+  transition: transform 0.3s ease; /* Hiệu ứng xoay icon */
+}
+
+.google-btn:hover .google-icon {
+  transform: rotate(360deg); /* Xoay icon khi hover */
+}
+
+.or-divider {
+  color: #666;
+  font-size: 12px;
+  margin: 15px 0;
+  position: relative;
+  text-align: center;
+  opacity: 0;
+  animation: fadeIn 1.2s ease-in forwards; /* Animation xuất hiện */
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: #d3d3d3;
+  transition: width 0.3s ease; /* Hiệu ứng kéo dài đường kẻ */
+}
+
+.or-divider::before {
+  left: 0;
+}
+
+.or-divider::after {
+  right: 0;
+}
+
+.or-divider:hover::before,
+.or-divider:hover::after {
+  width: 35%; /* Kéo dài đường kẻ khi hover */
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #3333335e;
+  border-radius: 5px;
+  font-size: 14px;
+  background-color: #fff;
+  color: #333;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng viền và shadow */
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #a084ca;
+  box-shadow: 0 0 8px rgba(160, 132, 202, 0.3); /* Glow khi focus */
+}
+
+.input-field::placeholder {
+  color: #ccc;
+  transition: color 0.3s ease; /* Hiệu ứng màu placeholder */
+}
+
+.input-field:focus::placeholder {
+  color: #a084ca; /* Đổi màu placeholder khi focus */
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #a084ca, #6b5b95); /* Gradient nền */
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
+}
+
+.login-btn:hover {
+  background: linear-gradient(45deg, #8a6ab7, #5a4a84); /* Gradient đổi khi hover */
+  transform: translateY(-2px); /* Nâng nhẹ */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Thêm shadow */
+  color: #fff;
+}
+
+.register-link,
+.forgot-password {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #333;
+  transition: color 0.3s ease; /* Hiệu ứng màu chữ */
+}
+
+.register-link:hover,
+.forgot-password:hover {
+  color: #a084ca; /* Đổi màu khi hover */
+}
+
+.register-link a,
+.forgot-password a {
+  color: #1da1f2;
+  text-decoration: none;
+  transition: color 0.3s ease; /* Hiệu ứng màu link */
+}
+
+.register-link a:hover,
+.forgot-password a:hover {
+  color: #0c87d1; /* Đổi màu link khi hover */
+  text-decoration: underline;
+}
