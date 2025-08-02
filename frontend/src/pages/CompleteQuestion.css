@@ -1,0 +1,175 @@
+.complete-question {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.complete-question .div {
+  background-color: #ffffff;
+  height: 1024px;
+  position: relative;
+  width: 1440px;
+}
+
+.complete-question .group {
+  background-color: #ffffff;
+  border: 1px solid;
+  border-color: #dddddd;
+  border-radius: 8px;
+  box-shadow:
+    0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 2px 8px #00000014;
+  height: 57px;
+  left: 48px;
+  position: absolute;
+  top: 38px;
+  width: 151px;
+}
+
+.complete-question .overlap-group-wrapper {
+  height: 33px;
+  left: 26px;
+  position: relative;
+  top: 13px;
+  width: 100px;
+}
+
+.complete-question .overlap-group {
+  height: 33px;
+  position: relative;
+  width: 98px;
+}
+
+.complete-question .chevron-left {
+  height: 28px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 27px;
+}
+
+.complete-question .vector {
+  height: 16px;
+  left: 9px;
+  position: absolute;
+  top: 6px;
+  width: 9px;
+}
+
+.complete-question .text-wrapper {
+  color: #333333;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 24px;
+  font-weight: 500;
+  left: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  position: absolute;
+  text-align: center;
+  top: 3px;
+  width: 84px;
+}
+
+.complete-question .overlap {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 8px 32px #00000014;
+  height: 402px;
+  left: 420px;
+  position: absolute;
+  top: 311px;
+  width: 600px;
+}
+
+.complete-question .div-wrapper {
+  background-color: #5ea4ff;
+  border-radius: 22369600px;
+  height: 64px;
+  left: 268px;
+  position: absolute;
+  top: 32px;
+  width: 64px;
+}
+
+.complete-question .text-wrapper-2 {
+  color: #ffffff;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  left: 23px;
+  letter-spacing: 0;
+  line-height: 36px;
+  position: absolute;
+  text-align: center;
+  top: 13px;
+  white-space: nowrap;
+}
+
+.complete-question .text-wrapper-3 {
+  color: #3c315b;
+  font-family: "Poppins-Bold", Helvetica;
+  font-size: 24px;
+  font-weight: 700;
+  left: 174px;
+  letter-spacing: 0;
+  line-height: 36px;
+  position: absolute;
+  text-align: center;
+  top: 111px;
+  white-space: nowrap;
+}
+
+.complete-question .p {
+  color: #555555;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 101px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  text-align: center;
+  top: 165px;
+  width: 399px;
+}
+
+.complete-question .text-wrapper-4 {
+  color: #666666;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 50%;
+  transform: translateX(-50%);
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 250px;
+  white-space: pre-line;
+  width: 400px;
+}
+
+.complete-question .overlap-2 {
+  background-color: #5ea4ff;
+  border-radius: 8px;
+  height: 48px;
+  left: 200px;
+  position: absolute;
+  top: 322px;
+  width: 200px;
+}
+
+.complete-question .text-wrapper-5 {
+  color: #ffffff;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  left: 39px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 11px;
+  white-space: nowrap;
+}

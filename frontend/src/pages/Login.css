@@ -24,6 +24,77 @@
   border-radius: 20px;
   margin-top: 60px;
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng scale và shadow */
+  position: relative;
+}
+
+/* Toast Notification Styles */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  animation: slideInRight 0.5s ease-out;
+}
+
+.toast-content {
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.toast-content.success {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+}
+
+.toast-content.error {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  box-shadow: 0 8px 32px rgba(244, 67, 54, 0.3);
+}
+
+.toast-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  color: white;
+  flex: 1;
+}
+
+.toast-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.toast-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .login-box-pa:hover {
@@ -219,4 +290,173 @@
 .forgot-password a:hover {
   color: #0c87d1; /* Đổi màu link khi hover */
   text-decoration: underline;
+}
+
+.login-container {
+  font-family: Poppins, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.header {
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  height: 60px;
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 1000;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  margin-top: 0px;
+  height: 60px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  color: #4a3c8c;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.nav-links a:hover {
+  color: #6b5b95;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.login-btn-nav{
+  padding: 8px 15px;
+  margin-left: 10px;
+  background: linear-gradient(45deg, #a084ca, #6b5b95); /* Gradient nền */
+  border: 1px solid #a084ca;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
+}
+
+.signup-btn {
+  padding: 8px 15px;
+  margin-left: 10px;
+  border: 1px solid #a084ca;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
+}
+
+.login-btn-nav:hover {
+  background: linear-gradient(45deg, #8a6ab7, #5a4a84); /* Gradient đổi khi hover */
+  transform: translateY(-2px); /* Nâng nhẹ */
+  color: #fff;
+}
+
+.signup-btn {
+  background-color: #fff;
+  color: #a084ca;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px); /* Nâng nhẹ */
+  background: linear-gradient(45deg, #dad8d956, #aaa9ab23); /* Gradient đổi khi hover */
+
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 70px;
+}
+
+.footer {
+  background: #4a3c8c;
+  color: #fff;
+  padding: 20px 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 200px;
+  margin: 10px 0;
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.footer-section h4 {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.footer-section ul li:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 20px;
+  border-top: 1px solid #666;
+  padding-top: 10px;
+}
+
+.footer-bottom p {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: #ccc;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.footer-links a:hover {
+  color: #fff;
 }

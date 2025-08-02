@@ -1,9 +1,48 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../assets/LogoPredica.png";
 import { Outlet } from "react-router-dom";
 import './MainLayout.css';
 
 const MainLayout: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('user');
+      }
+    }
+
+    // Close dropdown when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.user-menu')) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    setShowUserMenu(false);
+    window.location.href = '/';
+  };
+
+  const toggleUserMenu = () => {
+    setShowUserMenu(!showUserMenu);
+  };
   return (
     <div className="login-container">
       {/* Navbar */}
@@ -15,9 +54,27 @@ const MainLayout: React.FC = () => {
           </div>
         </div>
         <div className="nav-right">
-          <button className="login-btn-nav">Đăng nhập</button>
-          <button className="signup-btn">Đăng kí</button>
-        </div>
+          {user ? (
+            <div className="user-menu">
+              <div className="user-info" onClick={toggleUserMenu}>
+                <span className="user-email">{user.email}</span>
+                <span className="dropdown-arrow">▼</span>
+              </div>
+              {showUserMenu && (
+                <div className="user-dropdown">
+                  <button className="logout-btn" onClick={handleLogout}>
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <button className="login-btn-nav" onClick={() => window.location.href="/login"}>Đăng nhập</button>
+              <button className="signup-btn" onClick={() => window.location.href="/register"}>Đăng kí</button>
+            </>
+          )}
+        </div>  
       </header>
 
       {/* Nội dung trang */}

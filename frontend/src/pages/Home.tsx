@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import './Home.css';
 import IMAGE2 from "../assets/image 3.png";
 import IMAGE from "../assets/image 4.png";
@@ -7,6 +7,29 @@ import image5 from "../assets/image 5.png";
 import image1 from "../assets/image 3.png";
 
 export const Home: React.FC = () => {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }, []);
+
+  const handleStartPredicting = () => {
+    if (user) {
+      // If logged in, go to survey
+      window.location.href = '/survey';
+    } else {
+      // If not logged in, go to login
+      window.location.href = '/login';
+    }
+  };
   return (
     <div className="home">
       <div className="div">
@@ -24,6 +47,12 @@ export const Home: React.FC = () => {
 
             <img className="img" alt="Image" src={image5} />
           </div>
+
+          {user && (
+            <div className="welcome-message">
+              <span className="welcome-text">Chào mừng {user.name || user.email}!</span>
+            </div>
+          )}
 
           <p className="predict-your">
             <span className="text-wrapper">
@@ -43,8 +72,10 @@ export const Home: React.FC = () => {
 
           <div className="group-3">
             <div className="overlap-group-wrapper">
-              <div className="div-wrapper">
-                <div className="text-wrapper-2">Start Predicting</div>
+              <div className="div-wrapper" onClick={handleStartPredicting} style={{ cursor: 'pointer' }}>
+                <div className="text-wrapper-2">
+                  {user ? 'Start Predicting' : 'Đăng nhập để dự đoán'}
+                </div>
               </div>
             </div>
 

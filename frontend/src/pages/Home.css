@@ -8,7 +8,7 @@
 
 .home .div {
   background-color: #ffffff;
-  height: 3660px;
+  height: 3000px;
   overflow: hidden;
   position: relative;
   width: 1440px;
@@ -84,6 +84,28 @@
   width: 192px;
 }
 
+/* Welcome Message Styles */
+.home .welcome-message {
+  position: absolute;
+  top: -180px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.home .welcome-text {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  white-space: nowrap;
+  display: inline-block;
+}
+
 .home .predict-your {
   color: transparent;
   font-family: "Poppins-Bold", Helvetica;
@@ -95,7 +117,7 @@
   line-height: 85px;
   position: absolute;
   text-align: center;
-  top: 0;
+  top: -140px;
 }
 
 .home .text-wrapper {
@@ -117,7 +139,7 @@
   line-height: 32.5px;
   position: absolute;
   text-align: center;
-  top: 258px;
+  top: 308px;
   width: 783px;
 }
 
@@ -125,7 +147,7 @@
   height: 66px;
   left: 460px;
   position: absolute;
-  top: 417px;
+  top: 467px;
   width: 435px;
 }
 

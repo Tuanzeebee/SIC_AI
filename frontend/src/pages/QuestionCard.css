@@ -1,0 +1,320 @@
+.question {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.question .div {
+  background-color: #ffffff;
+  height: 1024px;
+  position: relative;
+  width: 1440px;
+}
+
+.question .text-wrapper {
+  color: #555555;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 462px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  text-align: center;
+  top: 187px;
+  width: 470px;
+}
+
+.question .overlap {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 8px 32px #00000014;
+  height: 565px;
+  left: 397px;
+  position: absolute;
+  top: 270px;
+  width: 600px;
+}
+
+.question .p {
+  color: #666666;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 14px;
+  font-weight: 400;
+  left: 32px;
+  letter-spacing: 0;
+  line-height: 21px;
+  position: absolute;
+  top: 31px;
+  white-space: nowrap;
+}
+
+.question .text-wrapper-2 {
+  color: #666666;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 14px;
+  font-weight: 400;
+  left: 540px;
+  letter-spacing: 0;
+  line-height: 21px;
+  position: absolute;
+  top: 31px;
+  white-space: nowrap;
+}
+
+.question .overlap-group {
+  background-color: #f0f0f0;
+  border-radius: 22369600px;
+  height: 8px;
+  left: 32px;
+  position: absolute;
+  top: 61px;
+  width: 536px;
+}
+
+.question .rectangle {
+  background-color: #5ea4ff;
+  border-radius: 22369600px;
+  height: 8px;
+  width: 134px;
+}
+
+.question .text-wrapper-3 {
+  color: #3c315b;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-size: 20px;
+  font-weight: 600;
+  left: 32px;
+  letter-spacing: 0;
+  line-height: 30px;
+  position: absolute;
+  top: 92px;
+  width: 493px;
+}
+
+.question .div-wrapper {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #e5e5e5;
+  border-radius: 8px;
+  height: 60px;
+  left: 32px;
+  position: absolute;
+  top: 177px;
+  width: 536px;
+}
+
+.question .text-wrapper-4 {
+  color: #3c315b;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  left: 16px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  top: 14px;
+  white-space: nowrap;
+}
+
+.question .overlap-2 {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #e5e5e5;
+  border-radius: 8px;
+  height: 60px;
+  left: 32px;
+  position: absolute;
+  top: 249px;
+  width: 536px;
+}
+
+.question .overlap-3 {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #e5e5e5;
+  border-radius: 8px;
+  height: 60px;
+  left: 32px;
+  position: absolute;
+  top: 321px;
+  width: 536px;
+}
+
+.question .overlap-4 {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #e5e5e5;
+  border-radius: 8px;
+  height: 60px;
+  left: 32px;
+  position: absolute;
+  top: 393px;
+  width: 536px;
+}
+
+.question .overlap-5 {
+  background-color: #e5e5e5;
+  border-radius: 8px;
+  height: 48px;
+  left: 448px;
+  position: absolute;
+  top: 485px;
+  width: 120px;
+}
+
+.question .text-wrapper-5 {
+  color: #999999;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  left: 31px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 10px;
+  white-space: nowrap;
+}
+
+.question .group {
+  background-color: #ffffff;
+  border: 1px solid;
+  border-color: #dddddd;
+  border-radius: 8px;
+  box-shadow:
+    0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 2px 8px #00000014;
+  height: 57px;
+  left: 48px;
+  position: absolute;
+  top: 38px;
+  width: 151px;
+}
+
+.question .overlap-group-wrapper {
+  height: 33px;
+  left: 26px;
+  position: relative;
+  top: 13px;
+  width: 100px;
+}
+
+.question .overlap-group-2 {
+  height: 33px;
+  position: relative;
+  width: 98px;
+}
+
+.question .chevron-left {
+  height: 28px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 27px;
+}
+
+.question .vector {
+  height: 16px;
+  left: 9px;
+  position: absolute;
+  top: 6px;
+  width: 9px;
+}
+
+.question .text-wrapper-6 {
+  color: #333333;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 24px;
+  font-weight: 500;
+  left: 14px;
+  letter-spacing: 0;
+  line-height: 21px;
+  position: absolute;
+  text-align: center;
+  top: 3px;
+  width: 84px;
+}
+.next-button {
+  position: absolute;
+  top: 485px;
+  left: 448px;
+  width: 120px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4080ff;
+  color: white;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.next-button:hover {
+  background-color: #3366cc;
+}
+
+.next-button.disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.next-button.disabled:hover {
+  background-color: #cccccc;
+}
+
+/* Selected option styles */
+.div-wrapper.selected,
+.overlap-2.selected,
+.overlap-3.selected,
+.overlap-4.selected {
+  background-color: #e6f3ff;
+  border: 2px solid #4080ff;
+}
+
+/* Multiple selection indicator */
+.multiple-selection-info {
+  color: #666666;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+  position: absolute;
+  left: 32px;
+  top: 105px;
+  text-align: left;
+}
+
+.back-button {
+  position: absolute;
+  top: 38px;
+  left: 48px;
+  height: 57px;
+  padding: 0 20px;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 8px #00000014;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #f0f0f0;
+}
+
+.vector {
+  height: 16px;
+  width: 9px;
+}

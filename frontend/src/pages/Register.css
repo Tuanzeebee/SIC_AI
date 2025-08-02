@@ -1,0 +1,891 @@
+.register-student {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+/* Toast Notification Styles */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  animation: slideInRight 0.5s ease-out;
+}
+
+.toast-content {
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.toast-content.success {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+}
+
+.toast-content.error {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  box-shadow: 0 8px 32px rgba(244, 67, 54, 0.3);
+}
+
+.toast-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  color: white;
+  flex: 1;
+}
+
+.toast-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.toast-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.register-student .div {
+  background-color: #ffffff;
+  height: 1564px;
+  overflow: hidden;
+  position: relative;
+  width: 1440px;
+}
+
+.register-student .overlap {
+  background-color: #f8f9fa;
+  border-radius: 25px;
+  height: 733px;
+  left: 421px;
+  position: absolute;
+  top: 128px;
+  width: 597px;
+}
+
+.register-student .rectangle {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow:
+    0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 8px 32px #00000014;
+  height: 651px;
+  left: 78px;
+  position: absolute;
+  top: 42px;
+  width: 448px;
+}
+
+.register-student .rectangle-2 {
+  background-color: #e5e7eb;
+  height: 1px;
+  left: 111px;
+  position: absolute;
+  top: 288px;
+  width: 102px;
+}
+
+.register-student .rectangle-3 {
+  background-color: #e5e7eb;
+  height: 1px;
+
+/* Input field styles */
+.register-student input[type="email"],
+.register-student input[type="text"],
+.register-student input[type="password"] {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 10px 5px;
+  font-size: 14px;
+  width: 300px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.register-student input[type="email"]:focus,
+.register-student input[type="text"]:focus,
+.register-student input[type="password"]:focus {
+  border-bottom-color: #007bff;
+}
+
+.register-student input[type="email"]:disabled,
+.register-student input[type="text"]:disabled,
+.register-student input[type="password"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Specific input positioning */
+.register-student .text-wrapper-12 {
+  position: absolute;
+  top: 350px;
+  left: 140px;
+}
+
+.register-student .text-wrapper-name {
+  position: absolute;
+  top: 250px;
+  left: 140px;
+}
+
+.register-student .text-wrapper-13 {
+  position: absolute;
+  top: 450px;
+  left: 140px;
+}
+
+.register-student .text-wrapper-11 {
+  position: absolute;
+  top: 550px;
+  left: 140px;
+}
+
+/* Button styles */
+.register-student button[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 620px;
+  left: 200px;
+}
+
+.register-student button[type="submit"]:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.register-student button[type="submit"]:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Error and success messages */
+.error-message,
+.success-message {
+  position: absolute;
+  top: 600px;
+  left: 140px;
+  font-size: 14px;
+  max-width: 300px;
+  text-align: center;
+}
+  left: 392px;
+  position: absolute;
+  top: 288px;
+  width: 102px;
+}
+
+.register-student .text-wrapper {
+  color: #3c315b;
+  font-family: "Potta One-Regular", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  left: 256px;
+  letter-spacing: 0;
+  line-height: 32px;
+  position: absolute;
+  text-align: center;
+  top: 66px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-2 {
+  color: #3c315b;
+  font-family: "Potta One-Regular", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  left: 245px;
+  letter-spacing: 0;
+  line-height: 32px;
+  position: absolute;
+  text-align: center;
+  top: 102px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-3 {
+  color: #3c315b;
+  font-family: "Poppins-Bold", Helvetica;
+  font-size: 24px;
+  font-weight: 700;
+  left: 177px;
+  letter-spacing: 0;
+  line-height: 32px;
+  position: absolute;
+  text-align: center;
+  top: 152px;
+  white-space: nowrap;
+}
+
+.register-student .welcome-aboard-let-s {
+  color: #666666;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 111px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  text-align: center;
+  top: 200px;
+  width: 380px;
+}
+
+.register-student .rectangle-4 {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #f0f0f0;
+  border-radius: 12px;
+  height: 52px;
+  left: 111px;
+  position: absolute;
+  top: 446px;
+  width: 384px;
+}
+
+.register-student .rectangle-5 {
+  background-color: #ab9ff2;
+  border-radius: 12px;
+  box-shadow:
+    0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 4px 16px #5ea4ff4c;
+  height: 48px;
+  left: 111px;
+  position: absolute;
+  top: 519px;
+  width: 384px;
+}
+
+.register-student .text-wrapper-4 {
+  color: #ffffff;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-size: 16px;
+  font-weight: 600;
+  left: 264px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 530px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-5 {
+  color: #666666;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 14px;
+  font-weight: 400;
+  left: 187px;
+  letter-spacing: 0;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
+  top: 590px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-6 {
+  color: #5ea4ff;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 14px;
+  font-weight: 500;
+  left: 375px;
+  letter-spacing: 0;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
+  top: 590px;
+  white-space: nowrap;
+}
+
+.register-student .p {
+  color: #999999;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 12px;
+  font-weight: 400;
+  left: 145px;
+  letter-spacing: 0;
+  line-height: 19.5px;
+  position: absolute;
+  text-align: center;
+  top: 634px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-7 {
+  color: #5ea4ff;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 12px;
+  font-weight: 400;
+  left: 333px;
+  letter-spacing: 0;
+  line-height: 19.5px;
+  position: absolute;
+  text-align: center;
+  top: 634px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-8 {
+  color: #999999;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 12px;
+  font-weight: 400;
+  left: 434px;
+  letter-spacing: 0;
+  line-height: 19.5px;
+  position: absolute;
+  text-align: center;
+  top: 634px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-9 {
+  color: #5ea4ff;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 12px;
+  font-weight: 400;
+  left: 260px;
+  letter-spacing: 0;
+  line-height: 19.5px;
+  position: absolute;
+  text-align: center;
+  top: 653px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-10 {
+  color: #999999;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 12px;
+  font-weight: 400;
+  left: 341px;
+  letter-spacing: 0;
+  line-height: 19.5px;
+  position: absolute;
+  text-align: center;
+  top: 653px;
+  white-space: nowrap;
+}
+
+.register-student .text-wrapper-11 {
+  color: #999999;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  height: 24px;
+  left: 126px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 457px;
+}
+
+.register-student .rectangle-6 {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #f0f0f0;
+  border-radius: 12px;
+  height: 52px;
+  left: 111px;
+  position: absolute;
+  top: 312px;
+  width: 384px;
+}
+
+.register-student .text-wrapper-12 {
+  color: #999999;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  height: 24px;
+  left: 126px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 323px;
+}
+
+.register-student .rectangle-7 {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #f0f0f0;
+  border-radius: 12px;
+  height: 52px;
+  left: 110px;
+  position: absolute;
+  top: 379px;
+  width: 384px;
+}
+
+.register-student .text-wrapper-13 {
+  color: #999999;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  height: 24px;
+  left: 126px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 391px;
+}
+
+.register-student .overlap-group {
+  height: 554px;
+  left: -1px;
+  position: absolute;
+  top: 1010px;
+  width: 1440px;
+}
+
+.register-student .vector {
+  height: 12px;
+  left: 398px;
+  position: absolute;
+  top: 8px;
+  width: 8px;
+}
+
+.register-student .rectangle-8 {
+  background-color: #3c315b;
+  height: 554px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 1440px;
+}
+
+.register-student .text-wrapper-14 {
+  color: #ffffff;
+  font-family: "Potta One-Regular", Helvetica;
+  font-size: 25px;
+  font-weight: 400;
+  left: 50px;
+  letter-spacing: 0;
+  line-height: 25px;
+  position: absolute;
+  top: 67px;
+  white-space: nowrap;
+  width: 107px;
+}
+
+.register-student .text-wrapper-15 {
+  color: #ffffff;
+  font-family: "Potta One-Regular", Helvetica;
+  font-size: 25px;
+  font-weight: 400;
+  left: 50px;
+  letter-spacing: 0;
+  line-height: 25px;
+  position: absolute;
+  top: 96px;
+  white-space: nowrap;
+  width: 136px;
+}
+
+.register-student .text-wrapper-16 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 50px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 162px;
+  width: 274px;
+}
+
+.register-student .rectangle-9 {
+  background-color: #5ea4ff;
+  border-radius: 22369600px;
+  height: 47px;
+  left: 50px;
+  position: absolute;
+  top: 310px;
+  width: 46px;
+}
+
+.register-student .frame {
+  height: 23px;
+  left: 61px;
+  position: absolute;
+  top: 322px;
+  width: 23px;
+}
+
+.register-student .img {
+  height: 19px;
+  left: 0;
+  position: absolute;
+  top: 2px;
+  width: 23px;
+}
+
+.register-student .rectangle-10 {
+  background-color: #5ea4ff;
+  border-radius: 22369600px;
+  height: 47px;
+  left: 114px;
+  position: absolute;
+  top: 310px;
+  width: 46px;
+}
+
+.register-student .vector-wrapper {
+  height: 23px;
+  left: 125px;
+  position: absolute;
+  top: 322px;
+  width: 23px;
+}
+
+.register-student .vector-2 {
+  height: 16px;
+  left: 1px;
+  position: absolute;
+  top: 4px;
+  width: 20px;
+}
+
+.register-student .rectangle-11 {
+  background-color: #5ea4ff;
+  border-radius: 22369600px;
+  height: 47px;
+  left: 178px;
+  position: absolute;
+  top: 310px;
+  width: 46px;
+}
+
+.register-student .frame-2 {
+  background-image: url(./vector-4.svg);
+  background-size: 100% 100%;
+  height: 23px;
+  left: 190px;
+  position: absolute;
+  top: 322px;
+  width: 23px;
+}
+
+.register-student .text-wrapper-17 {
+  color: #ffffff;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-size: 18px;
+  font-weight: 600;
+  left: 394px;
+  letter-spacing: 0;
+  line-height: 27px;
+  position: absolute;
+  top: 74px;
+  white-space: nowrap;
+  width: 82px;
+}
+
+.register-student .text-wrapper-18 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 394px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 124px;
+  white-space: nowrap;
+  width: 80px;
+}
+
+.register-student .text-wrapper-19 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 394px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 168px;
+  white-space: nowrap;
+  width: 62px;
+}
+
+.register-student .text-wrapper-20 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 394px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 212px;
+  white-space: nowrap;
+  width: 27px;
+}
+
+.register-student .text-wrapper-21 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 394px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 257px;
+  white-space: nowrap;
+  width: 111px;
+}
+
+.register-student .text-wrapper-22 {
+  color: #ffffff;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-size: 18px;
+  font-weight: 600;
+  left: 738px;
+  letter-spacing: 0;
+  line-height: 27px;
+  position: absolute;
+  top: 74px;
+  white-space: nowrap;
+  width: 105px;
+}
+
+.register-student .text-wrapper-23 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 738px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 124px;
+  white-space: nowrap;
+  width: 83px;
+}
+
+.register-student .text-wrapper-24 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 738px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 168px;
+  white-space: nowrap;
+  width: 73px;
+}
+
+.register-student .text-wrapper-25 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 738px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 212px;
+  white-space: nowrap;
+  width: 40px;
+}
+
+.register-student .text-wrapper-26 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 738px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 257px;
+  white-space: nowrap;
+  width: 48px;
+}
+
+.register-student .text-wrapper-27 {
+  color: #ffffff;
+  font-family: "Poppins-SemiBold", Helvetica;
+  font-size: 18px;
+  font-weight: 600;
+  left: 1082px;
+  letter-spacing: 0;
+  line-height: 27px;
+  position: absolute;
+  top: 74px;
+  white-space: nowrap;
+  width: 85px;
+}
+
+.register-student .text-wrapper-28 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1082px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 124px;
+  white-space: nowrap;
+  width: 109px;
+}
+
+.register-student .text-wrapper-29 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1082px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 168px;
+  white-space: nowrap;
+  width: 102px;
+}
+
+.register-student .text-wrapper-30 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1082px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 212px;
+  white-space: nowrap;
+  width: 125px;
+}
+
+.register-student .text-wrapper-31 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1082px;
+  letter-spacing: 0;
+  line-height: 26px;
+  position: absolute;
+  top: 257px;
+  white-space: nowrap;
+  width: 152px;
+}
+
+.register-student .rectangle-12 {
+  border-color: #555555;
+  border-top-style: solid;
+  border-top-width: 0.67px;
+  height: 66px;
+  left: 50px;
+  position: absolute;
+  top: 413px;
+  width: 1340px;
+}
+
+.register-student .text-wrapper-32 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 50px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  top: 450px;
+  white-space: nowrap;
+  width: 360px;
+}
+
+.register-student .text-wrapper-33 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1138px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  top: 450px;
+  white-space: nowrap;
+  width: 67px;
+}
+
+.register-student .text-wrapper-34 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1232px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  top: 450px;
+  white-space: nowrap;
+  width: 58px;
+}
+
+.register-student .text-wrapper-35 {
+  color: #cccccc;
+  font-family: "Poppins-Regular", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  left: 1316px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  top: 450px;
+  white-space: nowrap;
+  width: 74px;
+}
+
+.register-student .vector-3 {
+  height: 5px;
+  left: 638px;
+  position: absolute;
+  top: 973px;
+  width: 3px;
+}

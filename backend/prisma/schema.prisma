@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -9,18 +9,144 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String?
-  password String
-  posts    Post[]
+  id                    Int                      @id @default(autoincrement())
+  email                 String                   @unique
+  name                  String
+  password              String
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  predictedScores       PredictedScore[]
+  inputsReverse         PredictionInputReverse[]
+  inputsScore           PredictionInputScore[]
+  scoreRecords          ScoreRecord[]
+  SurveyAnalysisResults SurveyAnalysisResult[]
+  surveyResponses       SurveyResponse[]
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  authorId  Int?
-  author    User?    @relation(fields: [authorId], references: [id])
+model ScoreRecord {
+  id                    Int             @id @default(autoincrement())
+  userId                Int
+  studentId             String
+  year                  String
+  semesterNumber        Int
+  courseCode            String
+  courseName            String?
+  studyFormat           String
+  creditsUnit           Int
+  rawScore              Float?
+  convertedNumericScore Float?
+  convertedScore        String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  predictedScore        PredictedScore?
+  user                  User            @relation(fields: [userId], references: [id])
+}
+
+model PredictionInputReverse {
+  id                            Int                    @id @default(autoincrement())
+  userId                        Int
+  semesterNumber                Int
+  courseCode                    String
+  studyFormat                   String
+  creditsUnit                   Int
+  rawScore                      Float
+  partTimeHours                 Float
+  financialSupport              Int
+  emotionalSupport              Int
+  financialSupportXPartTime     Float
+  rawScoreXPartTime             Float
+  rawScoreXFinancial            Float
+  rawScoreXEmotional            Float
+  rawScoreXPartTimeFinancial    Float
+  predictedWeeklyStudyHours     Float
+  predictedAttendancePercentage Float
+  mode                          String
+  createdAt                     DateTime               @default(now())
+  updatedAt                     DateTime               @updatedAt
+  user                          User                   @relation(fields: [userId], references: [id])
+  inputScores                   PredictionInputScore[]
+}
+
+model PredictionInputScore {
+  id                          Int                     @id @default(autoincrement())
+  userId                      Int
+  reverseInputId              Int?
+  semesterNumber              Int
+  courseCode                  String
+  studyFormat                 String
+  creditsUnit                 Int
+  weeklyStudyHours            Float
+  attendancePercentage        Float
+  partTimeHours               Float
+  financialSupport            Int
+  emotionalSupport            Int
+  studyHoursXAttendance       Float
+  studyHoursXPartTime         Float
+  financialSupportXPartTime   Float
+  attendanceXEmotionalSupport Float
+  fullInteractionFeature      Float
+  mode                        String
+  createdAt                   DateTime                @default(now())
+  updatedAt                   DateTime                @updatedAt
+  predictedScore              PredictedScore?
+  reverseInput                PredictionInputReverse? @relation(fields: [reverseInputId], references: [id])
+  user                        User                    @relation(fields: [userId], references: [id])
+}
+
+model PredictedScore {
+  id             Int                  @id @default(autoincrement())
+  userId         Int
+  inputScoreId   Int                  @unique
+  scoreRecordId  Int?                 @unique
+  predictedScore Float
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  inputScore     PredictionInputScore @relation(fields: [inputScoreId], references: [id])
+  scoreRecord    ScoreRecord?         @relation(fields: [scoreRecordId], references: [id])
+  user           User                 @relation(fields: [userId], references: [id])
+}
+
+model SurveyQuestion {
+  id            Int              @id @default(autoincrement())
+  text          String
+  category      QuestionCategory
+  options       String[]
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  allowMultiple Boolean          @default(false)
+  answers       SurveyAnswer[]
+}
+
+model SurveyResponse {
+  id          Int            @id @default(autoincrement())
+  userId      Int
+  submittedAt DateTime       @default(now())
+  answers     SurveyAnswer[]
+  user        User           @relation(fields: [userId], references: [id])
+}
+
+model SurveyAnswer {
+  id             Int            @id @default(autoincrement())
+  responseId     Int
+  questionId     Int
+  selectedOption String
+  question       SurveyQuestion @relation(fields: [questionId], references: [id])
+  response       SurveyResponse @relation(fields: [responseId], references: [id])
+}
+
+model SurveyAnalysisResult {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  emotionalLevel Int
+  financialLevel Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+enum QuestionCategory {
+  EMOTIONAL
+  FINANCIAL
+  GENERAL
 }
