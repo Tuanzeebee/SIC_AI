@@ -40,15 +40,13 @@ PredictedScore: { inputScoreId, predictedScore }
 cd backend
 npm install
 npx prisma generate    # Generate Prisma client after schema changes
-npm run start:dev       # Starts NestJS on port 3000 with hot reload
+cd e:\SIC_AI\backend; npm run start:dev     # Starts NestJS on port 3000 with hot reload
 ```
-cd e:\SIC_AI\frontend; npm run dev
-cd e:\SIC_AI\backend; npm run start:dev
 **Frontend development:**
 ```powershell
 cd frontend  
 npm install
-npm run dev             # Starts Vite dev server on port 5173
+cd e:\SIC_AI\frontend; npm run dev            # Starts Vite dev server on port 5173
 ```
 
 **ML service:**

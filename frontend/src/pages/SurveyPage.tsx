@@ -12,7 +12,7 @@ interface SurveyQuestion {
   category: string;
   options: string[];
   isActive: boolean;
-  allowMultiple?: boolean; // Thêm field để xác định có cho phép chọn nhiều không
+  allowMultiple?: boolean; 
 }
 
 export const SurveyPage = () => {
@@ -138,7 +138,13 @@ export const SurveyPage = () => {
   };
 
   const handleBack = () => {
-    window.location.href = '/';
+    if (step === 0) {
+      // Nếu đang ở câu hỏi đầu tiên (index 0), quay về trang chủ
+      window.location.href = '/';
+    } else {
+      // Nếu đang ở câu hỏi khác, quay về câu hỏi trước đó
+      setStep(step - 1);
+    }
   };
 
   const submitSurvey = async () => {

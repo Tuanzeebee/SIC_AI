@@ -106,4 +106,129 @@ export const surveyApi = {
   },
 };
 
+// Score Record API
+export interface ScoreRecord {
+  id: number;
+  userId: number;
+  studentId: string;
+  year: string;
+  semesterNumber: number;
+  courseCode: string;
+  courseName?: string;
+  studyFormat: string;
+  creditsUnit: number;
+  rawScore?: number;
+  convertedNumericScore?: number;
+  convertedScore?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UploadResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    created: {
+      scoreRecords: number;
+      predictionInputsReverse: number;
+      predictionInputsScore: number;
+    };
+    total: number;
+    sample: ScoreRecord[];
+    message: string;
+  };
+  error?: string;
+}
+
+export interface PredictionInputReverse {
+  id: number;
+  userId: number;
+  semesterNumber: number;
+  courseCode: string;
+  studyFormat: string;
+  creditsUnit: number;
+  rawScore: number;
+  partTimeHours: number;
+  financialSupport: number;
+  emotionalSupport: number;
+  financialSupportXPartTime: number;
+  rawScoreXPartTime: number;
+  rawScoreXFinancial: number;
+  rawScoreXEmotional: number;
+  rawScoreXPartTimeFinancial: number;
+  predictedWeeklyStudyHours: number;
+  predictedAttendancePercentage: number;
+  mode: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PredictionInputScore {
+  id: number;
+  userId: number;
+  reverseInputId?: number;
+  semesterNumber: number;
+  courseCode: string;
+  studyFormat: string;
+  creditsUnit: number;
+  weeklyStudyHours: number;
+  attendancePercentage: number;
+  partTimeHours: number;
+  financialSupport: number;
+  emotionalSupport: number;
+  studyHoursXAttendance: number;
+  studyHoursXPartTime: number;
+  financialSupportXPartTime: number;
+  attendanceXEmotionalSupport: number;
+  fullInteractionFeature: number;
+  mode: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const scoreRecordApi = {
+  uploadCsv: async (userId: number, file: File): Promise<UploadResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await api.post(`/api/score-records/upload-csv/${userId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  getByUserId: async (userId: number): Promise<{ success: boolean; data: ScoreRecord[]; count: number }> => {
+    const response = await api.get(`/api/score-records/user/${userId}`);
+    return response.data;
+  },
+
+  getAll: async (): Promise<{ success: boolean; data: ScoreRecord[]; count: number }> => {
+    const response = await api.get('/api/score-records');
+    return response.data;
+  },
+
+  // New endpoints for prediction inputs
+  getPredictionInputsReverseByUserId: async (userId: number): Promise<{ success: boolean; data: PredictionInputReverse[]; count: number }> => {
+    const response = await api.get(`/api/score-records/prediction-reverse/user/${userId}`);
+    return response.data;
+  },
+
+  getPredictionInputsScoreByUserId: async (userId: number): Promise<{ success: boolean; data: PredictionInputScore[]; count: number }> => {
+    const response = await api.get(`/api/score-records/prediction-score/user/${userId}`);
+    return response.data;
+  },
+
+  getAllPredictionInputsReverse: async (): Promise<{ success: boolean; data: PredictionInputReverse[]; count: number }> => {
+    const response = await api.get('/api/score-records/prediction-reverse');
+    return response.data;
+  },
+
+  getAllPredictionInputsScore: async (): Promise<{ success: boolean; data: PredictionInputScore[]; count: number }> => {
+    const response = await api.get('/api/score-records/prediction-score');
+    return response.data;
+  },
+};
+
 export default api;

@@ -7,6 +7,7 @@ interface SurveyQuestion {
   category: string;
   options: string[];
   isActive: boolean;
+  allowMultiple?: boolean; // Thêm field cho phép chọn nhiều
 }
 
 export const SurveyDashboard: React.FC = () => {
@@ -15,6 +16,7 @@ export const SurveyDashboard: React.FC = () => {
     text: "",
     category: "GENERAL",
     options: [""],
+    allowMultiple: false, // Thêm state cho allowMultiple
   });
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export const SurveyDashboard: React.FC = () => {
 
   const handleCreate = async () => {
     await axios.post("/api/survey-questions", newQuestion);
-    setNewQuestion({ text: "", category: "GENERAL", options: [""] });
+    setNewQuestion({ text: "", category: "GENERAL", options: [""], allowMultiple: false });
     fetchQuestions();
   };
 
@@ -80,6 +82,20 @@ export const SurveyDashboard: React.FC = () => {
           <option value="EMOTIONAL">EMOTIONAL</option>
           <option value="FINANCIAL">FINANCIAL</option>
         </select>
+        
+        {/* Thêm checkbox cho phép chọn nhiều */}
+        <div className="mb-2">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={newQuestion.allowMultiple}
+              onChange={(e) => setNewQuestion({ ...newQuestion, allowMultiple: e.target.checked })}
+              className="mr-2"
+            />
+            <span>Cho phép chọn nhiều lựa chọn</span>
+          </label>
+        </div>
+
         {newQuestion.options.map((opt, i) => (
           <div key={i} className="flex gap-2 mb-1">
             <input
@@ -118,6 +134,10 @@ export const SurveyDashboard: React.FC = () => {
               <div>
                 <p className="font-medium">{q.text}</p>
                 <p className="text-sm text-gray-600">Phân loại: {q.category}</p>
+                {/* Hiển thị thông tin cho phép chọn nhiều */}
+                <p className="text-sm text-gray-600">
+                  Loại: {q.allowMultiple ? "Chọn nhiều" : "Chọn một"}
+                </p>
                 <ul className="list-disc ml-5 text-sm mt-1">
                   {q.options.map((opt, i) => <li key={i}>{opt}</li>)}
                 </ul>

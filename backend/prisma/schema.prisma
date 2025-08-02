@@ -19,7 +19,7 @@ model User {
   inputsReverse         PredictionInputReverse[]
   inputsScore           PredictionInputScore[]
   scoreRecords          ScoreRecord[]
-  SurveyAnalysisResults SurveyAnalysisResult[]
+  SurveyAnalysisResults SurveyAnalysisResult?
   surveyResponses       SurveyResponse[]
 }
 
@@ -50,16 +50,16 @@ model PredictionInputReverse {
   studyFormat                   String
   creditsUnit                   Int
   rawScore                      Float
-  partTimeHours                 Float
-  financialSupport              Int
-  emotionalSupport              Int
-  financialSupportXPartTime     Float
-  rawScoreXPartTime             Float
-  rawScoreXFinancial            Float
-  rawScoreXEmotional            Float
-  rawScoreXPartTimeFinancial    Float
-  predictedWeeklyStudyHours     Float
-  predictedAttendancePercentage Float
+  partTimeHours                 Float?
+  financialSupport              Int?
+  emotionalSupport              Int?
+  financialSupportXPartTime     Float?
+  rawScoreXPartTime             Float?
+  rawScoreXFinancial            Float?
+  rawScoreXEmotional            Float?
+  rawScoreXPartTimeFinancial    Float?
+  predictedWeeklyStudyHours     Float?
+  predictedAttendancePercentage Float?
   mode                          String
   createdAt                     DateTime               @default(now())
   updatedAt                     DateTime               @updatedAt
@@ -75,16 +75,16 @@ model PredictionInputScore {
   courseCode                  String
   studyFormat                 String
   creditsUnit                 Int
-  weeklyStudyHours            Float
-  attendancePercentage        Float
-  partTimeHours               Float
-  financialSupport            Int
-  emotionalSupport            Int
-  studyHoursXAttendance       Float
-  studyHoursXPartTime         Float
-  financialSupportXPartTime   Float
-  attendanceXEmotionalSupport Float
-  fullInteractionFeature      Float
+  weeklyStudyHours            Float?
+  attendancePercentage        Float?
+  partTimeHours               Float?
+  financialSupport            Int?
+  emotionalSupport            Int?
+  studyHoursXAttendance       Float?
+  studyHoursXPartTime         Float?
+  financialSupportXPartTime   Float?
+  attendanceXEmotionalSupport Float?
+  fullInteractionFeature      Float?
   mode                        String
   createdAt                   DateTime                @default(now())
   updatedAt                   DateTime                @updatedAt
@@ -137,7 +137,7 @@ model SurveyAnswer {
 
 model SurveyAnalysisResult {
   id             Int      @id @default(autoincrement())
-  userId         Int
+  userId         Int      @unique
   emotionalLevel Int
   financialLevel Int
   createdAt      DateTime @default(now())

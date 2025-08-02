@@ -14,9 +14,10 @@ import { AppService } from './app.service';
 import { PrismaService } from './PrismaService/prisma.service';
 import { UserModule } from './User/user.module';
 import { SurveyModule } from './Survey/survey.module';
+import { ScoreRecordModule } from './ScoreRecord/score-record.module';
 
 @Module({
-  imports: [UserModule, SurveyModule],
+  imports: [UserModule, SurveyModule, ScoreRecordModule],
   controllers: [AppController],
   providers: [AppService, PrismaService], 
 })

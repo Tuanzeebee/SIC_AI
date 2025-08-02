@@ -48,7 +48,7 @@ const MainLayout: React.FC = () => {
       {/* Navbar */}
       <header className="header">
         <div className="nav-left">
-          <img src={Logo} alt="Score Predict Logo" className="logo" />
+          <img src={Logo} alt="Score Predict Logo" onClick={() => window.location.href="/"} className="logo" />
           <div className="nav-links">
             {/* <a href="#features">Our Features</a> */}
           </div>
