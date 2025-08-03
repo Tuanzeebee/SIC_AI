@@ -5,8 +5,8 @@ export const CourseDetail: React.FC = () => {
   return (
     <div className="course-detail">
       <button 
-        className="back-btn"
-        onClick={() => window.location.href = '/tutorial'}
+        className="course-detail-back-btn"
+        onClick={() => window.location.href = '/pre-learning-path'}
         title="Quay lại trang tutorial"
       >
         ← Quay lại
@@ -183,7 +183,13 @@ export const CourseDetail: React.FC = () => {
 
           <div className="group-3">
             <div className="overlap-23">
-              <div className="text-wrapper-59">Bắt đầu học</div>
+              <button 
+                className="text-wrapper-59"
+                onClick={() => window.location.href = '/study-with-me'}
+                style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}
+              >
+                Bắt đầu học
+              </button>
             </div>
           </div>
         </div>

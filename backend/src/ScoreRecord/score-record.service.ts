@@ -194,6 +194,11 @@ export class ScoreRecordService {
       // Use transaction to ensure all operations succeed or fail together
       const result = await this.prisma.$transaction(async (prisma) => {
         // 1. Delete existing data for this user first (to overwrite)
+        // Delete PredictedScore first due to foreign key constraints
+        await prisma.predictedScore.deleteMany({
+          where: { userId },
+        });
+        
         await prisma.scoreRecord.deleteMany({
           where: { userId },
         });

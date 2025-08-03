@@ -21,9 +21,11 @@ import { CalculatorGpaModule } from './CalculatorGpa/calculator-gpa.module';
 import { PredictionReverseModule } from './PredictionReverse/prediction-reverse.module';
 import { PredictionInputScoreModule } from './PredictionInputScore/prediction-input-score.module';
 import { PredictionScoreModule } from './prediction-score/prediction-score.module';
+import { PredictedScoreModule } from './predicted-score/predicted-score.module';
+import { PredictedGpaModule } from './predicted-gpa/predicted-gpa.module';
 
 @Module({
-  imports: [UserModule, SurveyModule, ScoreRecordModule, PartTimeHourSaveModule, CalculatorCreditModule, CalculatorGpaModule, PredictionReverseModule, PredictionInputScoreModule, PredictionScoreModule],
+  imports: [UserModule, SurveyModule, ScoreRecordModule, PartTimeHourSaveModule, CalculatorCreditModule, CalculatorGpaModule, PredictionReverseModule, PredictionInputScoreModule, PredictionScoreModule, PredictedScoreModule, PredictedGpaModule],
   controllers: [AppController],
   providers: [AppService, PrismaService], 
 })

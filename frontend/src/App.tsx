@@ -10,6 +10,8 @@ import { SurveyDashboard } from './pages/Admin/SurveyDashBoard';
 import { Tutorial } from './pages/TutorialPrediction';
 import CsvUpload from './components/CsvUpload';
 import { CourseDetail } from './pages/CourseDetail';
+import { PreLearningPath } from './pages/PreLearingPath';
+import StudyWithMe from './pages/Studywithme';
 function App() {
   return (
     <Router>
@@ -19,12 +21,15 @@ function App() {
         <Route path="/survey-history" element={<SurveyHistory />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/study-with-me" element={<StudyWithMe />} /> 
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} /> 
           <Route path="/tutorial" element={<Tutorial />} />
           <Route path="/admin/survey-dashboard" element={<SurveyDashboard />} />
           <Route path="/csv-upload" element={<CsvUpload />} />
           <Route path="/course-detail" element={<CourseDetail />} />
+          <Route path="/pre-learning-path" element={<PreLearningPath />} />
+
           {/* Add more routes here as needed */}
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         </Route>

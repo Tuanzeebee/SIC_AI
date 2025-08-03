@@ -12,6 +12,10 @@ export type {
   QuickGpaStats 
 } from './calculatorGpaApi';
 
+// Import Predicted GPA API
+export { predictedGpaApi } from './predictedGpaApi';
+export type { PredictedGpaStats } from './predictedGpaApi';
+
 const API_BASE_URL = 'http://localhost:3000';
 
 const api = axios.create({

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { scoreRecordApi, partTimeHourSaveApi, calculatorGpaApi, calculatorCreditApi, predictionReverseApi, predictionInputScoreApi } from "../services/api";
+import { predictedScoreApi } from "../services/predictedScoreApi";
 import type { ScoreRecord } from "../services/api";
 import { useLayoutToast } from "../contexts/ToastContext";
 import "./TutorialPrediction.css";
@@ -347,40 +348,65 @@ export const Tutorial = (): React.JSX.Element => {
     setIsCheckingPartTimeHours(true);
     
     try {
-      // Check how many completed reverse predictions exist
+      showSuccess('Đang xử lý workflow hoàn chỉnh: lưu dữ liệu → lấy trung vị → dự đoán điểm...');
+      
+      // Step 1: Check how many completed reverse predictions exist
       const allCompletedResult = await predictionReverseApi.getAllCompleted();
       
       if (allCompletedResult.success && allCompletedResult.data && allCompletedResult.data.length > 0) {
-        // Create forward predictions from ALL reverse predictions (with selective overwrite)
-        const result = await predictionInputScoreApi.createFromAllReverse();
+        // Step 2: Create forward predictions from ALL reverse predictions (with selective overwrite)
+        showSuccess('Đang chuyển đổi dữ liệu dự đoán ngược...');
+        const transferResult = await predictionInputScoreApi.createFromAllReverse();
         
-        let successMessage = `Đã xử lý thành công: `;
-        const details = [];
+        let transferMessage = `Chuyển đổi dữ liệu: `;
+        const transferDetails = [];
         
-        if (result.created > 0) {
-          details.push(`${result.created} môn học mới`);
+        if (transferResult.created > 0) {
+          transferDetails.push(`${transferResult.created} môn mới`);
         }
-        if (result.overwritten > 0) {
-          details.push(`${result.overwritten} môn học được cập nhật`);
+        if (transferResult.overwritten > 0) {
+          transferDetails.push(`${transferResult.overwritten} môn cập nhật`);
         }
-        if (result.skipped > 0) {
-          details.push(`${result.skipped} môn học bỏ qua (thiếu dữ liệu)`);
+        if (transferResult.skipped > 0) {
+          transferDetails.push(`${transferResult.skipped} môn bỏ qua`);
         }
         
-        successMessage += details.join(', ');
+        transferMessage += transferDetails.join(', ');
+        showSuccess(transferMessage);
+
+        // Step 3: Execute complete workflow (populate medians + recalculate + predict)
+        showSuccess('Đang thực hiện quy trình hoàn chỉnh...');
+        const workflowResult = await predictedScoreApi.completeWorkflow();
         
-        showSuccess(successMessage);
-        
-        // Navigate to next page after successful data transfer
-        setTimeout(() => {
-          window.location.href = '/survey-history';
-        }, 3000); // Increase delay to 3 seconds for longer message
+        if (workflowResult.success && workflowResult.data) {
+          const { populateMedianResult, recalculateResult, predictionResult } = workflowResult.data;
+          
+          // Show detailed success message
+          const workflowDetails = [
+            `Điền trung vị: ${populateMedianResult.updatedCount}/${populateMedianResult.totalCoursesProcessed}`,
+            `Tính toán lại: ${recalculateResult.updatedCount}/${recalculateResult.totalCoursesProcessed}`,
+            `Dự đoán điểm: ${predictionResult.createdCount}/${predictionResult.processedCount}`
+          ];
+          
+          if (predictionResult.errorCount > 0) {
+            showError(`Có ${predictionResult.errorCount} lỗi trong quá trình dự đoán`);
+          }
+          
+          showSuccess(`✅ Hoàn thành workflow: ${workflowDetails.join(' | ')}`);
+          
+          // Navigate to next page after successful workflow
+          setTimeout(() => {
+            window.location.href = '/pre-learning-path';
+          }, 4000); // 4 seconds to show all messages
+        } else {
+          throw new Error(workflowResult.error || 'Workflow thất bại');
+        }
       } else {
         showError('Không tìm thấy dữ liệu dự đoán ngược hoàn chỉnh để chuyển đổi');
       }
     } catch (error) {
-      console.error('Error transferring prediction data:', error);
-      showError('Có lỗi xảy ra khi chuyển đổi dữ liệu: ' + (error as Error).message);
+      console.error('Error in complete workflow:', error);
+      showError('Có lỗi xảy ra trong quá trình workflow: ' + (error as Error).message);
     } finally {
       setIsCheckingPartTimeHours(false);
     }
@@ -917,7 +943,7 @@ export const Tutorial = (): React.JSX.Element => {
                   transition: 'all 0.2s ease'
                 }}
               >
-                {isCheckingPartTimeHours ? 'Đang kiểm tra...' : 'Tiếp tục →'}
+                {isCheckingPartTimeHours ? 'Đang thực hiện workflow...' : 'Tiếp tục & Dự đoán điểm →'}
               </button>
             )}
           </div>

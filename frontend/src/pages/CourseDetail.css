@@ -1,4 +1,4 @@
-.back-btn {
+.course-detail-back-btn {
   position: absolute;
   top: 80px;
   left: 20px;
@@ -18,7 +18,7 @@
   z-index: 10;
 }
 
-.back-btn:hover {
+.course-detail-back-btn:hover {
   background: #a084ca;
   color: white;
   transform: translateY(-2px);
