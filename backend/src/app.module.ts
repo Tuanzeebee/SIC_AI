@@ -15,9 +15,10 @@ import { PrismaService } from './PrismaService/prisma.service';
 import { UserModule } from './User/user.module';
 import { SurveyModule } from './Survey/survey.module';
 import { ScoreRecordModule } from './ScoreRecord/score-record.module';
+import { PartTimeHourSaveModule } from './PartTimeHourSave/part-time-hour-save.module';
 
 @Module({
-  imports: [UserModule, SurveyModule, ScoreRecordModule],
+  imports: [UserModule, SurveyModule, ScoreRecordModule, PartTimeHourSaveModule],
   controllers: [AppController],
   providers: [AppService, PrismaService], 
 })

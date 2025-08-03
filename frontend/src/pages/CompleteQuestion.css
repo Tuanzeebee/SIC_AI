@@ -154,10 +154,20 @@
   background-color: #5ea4ff;
   border-radius: 8px;
   height: 48px;
-  left: 200px;
+  left: 120px;
   position: absolute;
   top: 322px;
-  width: 200px;
+  width: 160px;
+}
+
+.complete-question .overlap-3 {
+  background-color: #28a745;
+  border-radius: 8px;
+  height: 48px;
+  left: 320px;
+  position: absolute;
+  top: 322px;
+  width: 160px;
 }
 
 .complete-question .text-wrapper-5 {
@@ -165,7 +175,21 @@
   font-family: "Poppins-Medium", Helvetica;
   font-size: 16px;
   font-weight: 500;
-  left: 39px;
+  left: 25px;
+  letter-spacing: 0;
+  line-height: 24px;
+  position: absolute;
+  text-align: center;
+  top: 11px;
+  white-space: nowrap;
+}
+
+.complete-question .text-wrapper-6 {
+  color: #ffffff;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 16px;
+  font-weight: 500;
+  left: 15px;
   letter-spacing: 0;
   line-height: 24px;
   position: absolute;

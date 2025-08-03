@@ -81,7 +81,7 @@ class MLPDeep(nn.Module):
             nn.SiLU(),
             nn.Linear(64, 32),
             nn.SiLU(),
-            nn.Linear(32, output_dim)  # ✨ sửa thành output_dim
+            nn.Linear(32, output_dim)  #sửa thành output_dim
         )
 
     def forward(self, x):

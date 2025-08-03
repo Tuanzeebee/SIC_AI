@@ -20,5 +20,5 @@ export class CreateSurveyQuestionDto {
 
   @IsBoolean()
   @IsOptional()
-  allowMultiple?: boolean; // Thêm field cho multiple selection
+  allowMultiple?: boolean; 
 }

@@ -231,4 +231,58 @@ export const scoreRecordApi = {
   },
 };
 
+// Prediction API
+export interface PredictionInputData {
+  userId: number;
+  year: string;
+  semesterNumber: number;
+  courseCode: string;
+  partTimeHours: number;
+  viewMode: 'semester' | 'full';
+}
+
+export interface UpdatePredictionData {
+  reversePredictionId?: number;
+  scorePredictionId?: number;
+  rawScore?: number;
+  weeklyStudyHours?: number;
+  attendancePercentage?: number;
+}
+
+export interface UpdatePartTimeHoursData {
+  userId: number;
+  partTimeHours: number;
+  viewMode: 'semester' | 'full';
+  semesterPartTimeHours?: {[key: string]: number}; // For semester mode
+}
+
+export const partTimeHourSaveApi = {
+  create: async (data: PredictionInputData): Promise<{ success: boolean; message: string; data?: any }> => {
+    const response = await api.post('/api/part-time-hour-saves/create', data);
+    return response.data;
+  },
+
+  update: async (data: UpdatePredictionData): Promise<{ success: boolean; message: string; updates?: any[] }> => {
+    const response = await api.put('/api/part-time-hour-saves/update', data);
+    return response.data;
+  },
+
+  getUserPartTimeHourSaves: async (userId: number, viewMode?: 'semester' | 'full'): Promise<{ success: boolean; data: any; message?: string }> => {
+    const response = await api.get(`/api/part-time-hour-saves/user/${userId}`, {
+      data: viewMode ? { viewMode } : undefined
+    });
+    return response.data;
+  },
+
+  getUserSemesters: async (userId: number): Promise<{ success: boolean; data: Array<{year: string, semesterNumber: number, label: string}>; message?: string }> => {
+    const response = await api.get(`/api/part-time-hour-saves/semesters/${userId}`);
+    return response.data;
+  },
+
+  updatePartTimeHours: async (data: UpdatePartTimeHoursData): Promise<{ success: boolean; message: string; data?: any }> => {
+    const response = await api.put('/api/part-time-hour-saves/update-part-time-hours', data);
+    return response.data;
+  },
+};
+
 export default api;

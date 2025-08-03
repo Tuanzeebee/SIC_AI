@@ -9,16 +9,40 @@ import { Readable } from 'stream';
 export class ScoreRecordService {
   constructor(private readonly prisma: PrismaService) {}
 
+  // Helper function to process semester number and handle "Hè" conversion
+  private parseSemesterNumber(semesterValue: any): number {
+    // Handle different column names and convert to string for processing
+    const value = String(semesterValue || '1').trim();
+    
+    // Check if value contains "Hè" (summer semester) and convert to 3
+    if (value.toLowerCase().includes('hè') || value.toLowerCase().includes('he')) {
+      return 3;
+    }
+    
+    // Try to parse as number
+    const parsedSemester = parseInt(value);
+    return isNaN(parsedSemester) ? 1 : parsedSemester;
+  }
+
   async uploadCsvFile(userId: number, file: Express.Multer.File) {
     try {
       // Parse CSV content
       const csvData = await this.parseCsvFile(file);
       
+      // Retrieve the latest survey analysis result for the user
+      const latestSurveyAnalysis = await this.prisma.surveyAnalysisResult.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      // Extract emotional and financial support levels (default to null if no survey analysis found)
+      const surveyEmotionalSupport = latestSurveyAnalysis?.emotionalLevel ?? null;
+      const surveyFinancialSupport = latestSurveyAnalysis?.financialLevel ?? null;
+      
       // Validate and transform data for ScoreRecord
       const scoreRecords = csvData.map((row) => {
         const semesterValue = row.semesterNumber || row['Semester'] || row['semester_number'] || row['Học kỳ'] || '1';
-        const parsedSemester = parseInt(semesterValue);
-        const validSemester = isNaN(parsedSemester) ? 1 : parsedSemester;
+        const validSemester = this.parseSemesterNumber(semesterValue);
         
         const creditsValue = row.creditsUnit || row['Credits'] || row['credits_unit'] || row['Số tín chỉ'] || '3';
         const parsedCredits = parseInt(creditsValue);
@@ -71,21 +95,19 @@ export class ScoreRecordService {
         const parsedPartTime = partTimeValue ? parseFloat(partTimeValue) : null;
         const validPartTime = (parsedPartTime !== null && !isNaN(parsedPartTime)) ? parsedPartTime : null;
         
-        const financialValue = row.financialSupport || row['financial_support'];
-        const parsedFinancial = financialValue ? parseInt(financialValue) : null;
-        const validFinancial = (parsedFinancial !== null && !isNaN(parsedFinancial)) ? parsedFinancial : null;
-        
-        const emotionalValue = row.emotionalSupport || row['emotional_support'];
-        const parsedEmotional = emotionalValue ? parseInt(emotionalValue) : null;
-        const validEmotional = (parsedEmotional !== null && !isNaN(parsedEmotional)) ? parsedEmotional : null;
+        // Use survey analysis values instead of CSV values for financial and emotional support
+        const validFinancial = surveyFinancialSupport;
+        const validEmotional = surveyEmotionalSupport;
         
         const semesterValue = row.semesterNumber || row['Semester'] || row['semester_number'] || row['Học kỳ'] || '1';
-        const parsedSemester = parseInt(semesterValue);
-        const validSemester = isNaN(parsedSemester) ? 1 : parsedSemester;
+        const validSemester = this.parseSemesterNumber(semesterValue);
         
         const creditsValue = row.creditsUnit || row['Credits'] || row['credits_unit'] || row['Số tín chỉ'] || '3';
         const parsedCredits = parseInt(creditsValue);
         const validCredits = isNaN(parsedCredits) ? 3 : parsedCredits;
+        
+        const yearValue = row.year || row['Year'] || row['Năm học'] || row['year'] || '2024';
+        const validYear = yearValue.toString();
         
         const predictedWeeklyValue = row.predictedWeeklyStudyHours || row['predicted_weekly_study_hours'];
         const parsedPredictedWeekly = predictedWeeklyValue ? parseFloat(predictedWeeklyValue) : null;
@@ -97,6 +119,7 @@ export class ScoreRecordService {
         
         return {
           userId,
+          year: validYear,
           semesterNumber: validSemester,
           courseCode: row.courseCode || row['Course Code'] || row['course_code'] || row['Mã môn học'] || '',
           studyFormat: row.studyFormat || row['Study Format'] || row['study_format'] || row['Hình thức học'] || 'Offline',
@@ -131,24 +154,23 @@ export class ScoreRecordService {
         const parsedPartTime = partTimeValue ? parseFloat(partTimeValue) : null;
         const validPartTime = (parsedPartTime !== null && !isNaN(parsedPartTime)) ? parsedPartTime : null;
         
-        const financialValue = row.financialSupport || row['financial_support'];
-        const parsedFinancial = financialValue ? parseInt(financialValue) : null;
-        const validFinancial = (parsedFinancial !== null && !isNaN(parsedFinancial)) ? parsedFinancial : null;
-        
-        const emotionalValue = row.emotionalSupport || row['emotional_support'];
-        const parsedEmotional = emotionalValue ? parseInt(emotionalValue) : null;
-        const validEmotional = (parsedEmotional !== null && !isNaN(parsedEmotional)) ? parsedEmotional : null;
+        // Use survey analysis values instead of CSV values for financial and emotional support
+        const validFinancial = surveyFinancialSupport;
+        const validEmotional = surveyEmotionalSupport;
         
         const semesterValue = row.semesterNumber || row['Semester'] || row['semester_number'] || row['Học kỳ'] || '1';
-        const parsedSemester = parseInt(semesterValue);
-        const validSemester = isNaN(parsedSemester) ? 1 : parsedSemester;
+        const validSemester = this.parseSemesterNumber(semesterValue);
         
         const creditsValue = row.creditsUnit || row['Credits'] || row['credits_unit'] || row['Số tín chỉ'] || '3';
         const parsedCredits = parseInt(creditsValue);
         const validCredits = isNaN(parsedCredits) ? 3 : parsedCredits;
         
+        const yearValue = row.year || row['Year'] || row['Năm học'] || row['year'] || '2024';
+        const validYear = yearValue.toString();
+        
         return {
           userId,
+          year: validYear,
           semesterNumber: validSemester,
           courseCode: row.courseCode || row['Course Code'] || row['course_code'] || row['Mã môn học'] || '',
           studyFormat: row.studyFormat || row['Study Format'] || row['study_format'] || row['Hình thức học'] || 'Offline',
@@ -215,7 +237,7 @@ export class ScoreRecordService {
         },
         total: result.total,
         sample: scoreRecords.slice(0, 3), // Return first 3 records as sample
-        message: `Đã ghi đè thành công ${result.scoreRecords} ScoreRecord, ${result.reverseInputs} PredictionInputReverse, và ${result.scoreInputs} PredictionInputScore từ ${result.total} dòng dữ liệu CSV (dữ liệu cũ đã được xóa)`,
+        message: `Đã ghi đè thành công ${result.scoreRecords} ScoreRecord, ${result.reverseInputs} PredictionInputReverse, và ${result.scoreInputs} PredictionInputScore từ ${result.total} dòng dữ liệu CSV (dữ liệu cũ đã được xóa). ${latestSurveyAnalysis ? `Sử dụng mức hỗ trợ từ khảo sát: Tinh thần=${surveyEmotionalSupport}, Tài chính=${surveyFinancialSupport}` : 'Chưa có dữ liệu khảo sát, sử dụng giá trị null cho hỗ trợ tinh thần và tài chính'}`,
       };
     } catch (error) {
       throw new Error(`Lỗi khi xử lý file CSV: ${error.message}`);

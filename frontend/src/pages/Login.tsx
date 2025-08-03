@@ -73,7 +73,16 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-box-pa">
+    <div className="login-container">
+      {/* Back Button */}
+      <button 
+        className="back-btn"
+        onClick={() => window.location.href = '/'}
+        title="Quay lại trang chủ"
+      >
+        ← Quay lại
+      </button>
+
       {/* Success Toast */}
       {showSuccessToast && (
         <div className="toast-notification">

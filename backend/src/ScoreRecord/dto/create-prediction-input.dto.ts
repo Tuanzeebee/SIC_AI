@@ -4,6 +4,9 @@ export class CreatePredictionInputReverseDto {
   @IsNumber()
   userId: number;
 
+  @IsString()
+  year: string;
+
   @IsNumber()
   semesterNumber: number;
 
@@ -70,6 +73,9 @@ export class CreatePredictionInputScoreDto {
   @IsNumber()
   @IsOptional()
   reverseInputId?: number;
+
+  @IsString()
+  year: string;
 
   @IsNumber()
   semesterNumber: number;

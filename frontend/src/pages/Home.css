@@ -139,7 +139,7 @@
   line-height: 32.5px;
   position: absolute;
   text-align: center;
-  top: 308px;
+  top: 270px;
   width: 783px;
 }
 
@@ -149,14 +149,25 @@
   position: absolute;
   top: 467px;
   width: 435px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
 .home .overlap-group-wrapper {
   height: 62px;
-  left: 0;
-  position: absolute;
-  top: 2px;
+  position: relative;
   width: 219px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.home .overlap-group-wrapper:hover {
+  transform: translateY(-2px);
 }
 
 .home .div-wrapper {
@@ -172,21 +183,29 @@
   font-family: "Poppins-SemiBold", Helvetica;
   font-size: 20px;
   font-weight: 600;
-  left: 32px;
   letter-spacing: 0;
   line-height: 30px;
   position: absolute;
   text-align: center;
   top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   white-space: nowrap;
 }
 
 .home .overlap-wrapper {
   height: 66px;
-  left: 235px;
-  position: absolute;
-  top: 0;
+  position: relative;
   width: 202px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.home .overlap-wrapper:hover {
+  transform: translateY(-2px);
 }
 
 .home .overlap-2 {
@@ -204,12 +223,13 @@
   font-family: "Poppins-SemiBold", Helvetica;
   font-size: 20px;
   font-weight: 600;
-  left: 31px;
   letter-spacing: 0;
   line-height: 30px;
   position: absolute;
   text-align: center;
   top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   white-space: nowrap;
 }
 

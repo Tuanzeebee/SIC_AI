@@ -45,6 +45,7 @@ model ScoreRecord {
 model PredictionInputReverse {
   id                            Int                    @id @default(autoincrement())
   userId                        Int
+  year                          String
   semesterNumber                Int
   courseCode                    String
   studyFormat                   String
@@ -71,6 +72,7 @@ model PredictionInputScore {
   id                          Int                     @id @default(autoincrement())
   userId                      Int
   reverseInputId              Int?
+  year                        String
   semesterNumber              Int
   courseCode                  String
   studyFormat                 String

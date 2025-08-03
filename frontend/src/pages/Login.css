@@ -1,30 +1,62 @@
+/* Font Families from Register.css */
+.potta-one-regular {
+  font-family: "Potta One-Regular", Helvetica;
+}
+
+.poppins-bold {
+  font-family: "Poppins-Medium", Helvetica;
+}
+
+.poppins-regular {
+  font-family: "Poppins-Regular", Helvetica;
+}
+
+.poppins-medium {
+  font-family: "Poppins-Medium", Helvetica;
+}
+
+.poppins-semibold {
+  font-family: "Poppins-SemiBold", Helvetica;
+}
+
 .login-container {
-  font-family: Poppins, sans-serif;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
   width: 100%;
-  transition: background 0.5s ease; /* Hiệu ứng chuyển màu nền mượt */
-}
-
-.main-content {
-  flex: 1;
-  display: flex;
+  background-color: #fff;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  width: 100%;
-  box-sizing: border-box;
+  position: relative;
 }
 
-.login-box-pa {
-  padding: 30px 40px;
-  background-color: #cccccc4a;
-  border-radius: 20px;
-  margin-top: 60px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng scale và shadow */
-  position: relative;
+/* Back Button Styles */
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(160, 132, 202, 0.1);
+  border: 1px solid #a084ca;
+  color: #a084ca;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 10;
+}
+
+.back-btn:hover {
+  background: #a084ca;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(160, 132, 202, 0.3);
 }
 
 /* Toast Notification Styles */
@@ -76,12 +108,14 @@
 }
 
 .toast-title {
+  font-family: "Poppins-SemiBold", Helvetica;
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .toast-subtitle {
+  font-family: "Poppins-Regular", Helvetica;
   font-size: 14px;
   opacity: 0.9;
 }
@@ -97,10 +131,6 @@
   }
 }
 
-.login-box-pa:hover {
-  transform: translateY(-5px); /* Nâng nhẹ khi hover */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Tăng shadow khi hover */
-}
 
 .login-box {
   background: #fff;
@@ -109,32 +139,20 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
   max-width: 300px;
-  transition: transform 0.3s ease; /* Hiệu ứng scale mượt */
+  transition: transform 0.3s ease;
 }
 
 .login-box:hover {
-  transform: scale(1.02); /* Phóng to nhẹ khi hover */
-}
-
-.login-box h2 {
-  color: #4a3c8c;
-  font-size: 28px;
-  margin-bottom: 10px;
-  font-weight: 600;
-  margin-top: 0;
-  transition: color 0.3s ease; /* Hiệu ứng chuyển màu chữ */
-}
-
-.login-box h2:hover {
-  color: #6b5b95; /* Đổi màu nhẹ khi hover */
+  transform: scale(1.02);
 }
 
 .welcome-text {
   color: #666;
+  font-family: "Poppins-Regular", Helvetica;
   font-size: 14px;
   margin-bottom: 20px;
-  opacity: 0; /* Hiệu ứng fade-in */
-  animation: fadeIn 1s ease-in forwards; /* Animation xuất hiện */
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
 }
 
 @keyframes fadeIn {
@@ -155,10 +173,11 @@
   width: 100%;
   border-radius: 5px;
   cursor: pointer;
+  font-family: "Poppins-Medium", Helvetica;
   font-size: 14px;
   color: #333;
   margin-bottom: 20px;
-  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,9 +185,9 @@
 
 .google-btn:hover {
   border-color: #a084ca;
-  background: #f8f9fa; /* Đổi nền nhẹ khi hover */
-  transform: translateY(-2px); /* Nâng nhẹ khi hover */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Thêm shadow */
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .google-icon {
@@ -176,21 +195,22 @@
   height: 20px;
   margin-right: 10px;
   vertical-align: middle;
-  transition: transform 0.3s ease; /* Hiệu ứng xoay icon */
+  transition: transform 0.3s ease;
 }
 
 .google-btn:hover .google-icon {
-  transform: rotate(360deg); /* Xoay icon khi hover */
+  transform: rotate(360deg);
 }
 
 .or-divider {
   color: #666;
+  font-family: "Poppins-Regular", Helvetica;
   font-size: 12px;
   margin: 15px 0;
   position: relative;
   text-align: center;
   opacity: 0;
-  animation: fadeIn 1.2s ease-in forwards; /* Animation xuất hiện */
+  animation: fadeIn 1.2s ease-in forwards;
 }
 
 .or-divider::before,
@@ -201,7 +221,7 @@
   width: 30%;
   height: 1px;
   background: #d3d3d3;
-  transition: width 0.3s ease; /* Hiệu ứng kéo dài đường kẻ */
+  transition: width 0.3s ease;
 }
 
 .or-divider::before {
@@ -214,7 +234,7 @@
 
 .or-divider:hover::before,
 .or-divider:hover::after {
-  width: 35%; /* Kéo dài đường kẻ khi hover */
+  width: 35%;
 }
 
 .input-field {
@@ -223,100 +243,76 @@
   margin: 8px 0;
   border: 1px solid #3333335e;
   border-radius: 5px;
+  font-family: "Poppins-Regular", Helvetica;
   font-size: 14px;
   background-color: #fff;
   color: #333;
   box-sizing: border-box;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng viền và shadow */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-field:focus {
   outline: none;
   border-color: #a084ca;
-  box-shadow: 0 0 8px rgba(160, 132, 202, 0.3); /* Glow khi focus */
+  box-shadow: 0 0 8px rgba(160, 132, 202, 0.3);
 }
 
 .input-field::placeholder {
   color: #ccc;
-  transition: color 0.3s ease; /* Hiệu ứng màu placeholder */
+  transition: color 0.3s ease;
 }
 
 .input-field:focus::placeholder {
-  color: #a084ca; /* Đổi màu placeholder khi focus */
+  color: #a084ca;
 }
 
 .login-btn {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(45deg, #a084ca, #6b5b95); /* Gradient nền */
+  background: linear-gradient(45deg, #a084ca, #6b5b95);
   border: none;
   border-radius: 5px;
   color: #fff;
+  font-family: "Poppins-SemiBold", Helvetica;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 15px;
-  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
+  transition: all 0.3s ease;
 }
 
 .login-btn:hover {
-  background: linear-gradient(45deg, #8a6ab7, #5a4a84); /* Gradient đổi khi hover */
-  transform: translateY(-2px); /* Nâng nhẹ */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Thêm shadow */
+  background: linear-gradient(45deg, #8a6ab7, #5a4a84);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   color: #fff;
 }
 
 .register-link,
 .forgot-password {
+  font-family: "Poppins-Medium", Helvetica;
   margin-top: 15px;
   font-size: 12px;
   color: #333;
-  transition: color 0.3s ease; /* Hiệu ứng màu chữ */
+  transition: color 0.3s ease;
 }
 
 .register-link:hover,
 .forgot-password:hover {
-  color: #a084ca; /* Đổi màu khi hover */
+  color: #a084ca;
 }
 
 .register-link a,
 .forgot-password a {
   color: #1da1f2;
   text-decoration: none;
-  transition: color 0.3s ease; /* Hiệu ứng màu link */
+  transition: color 0.3s ease;
 }
 
 .register-link a:hover,
 .forgot-password a:hover {
-  color: #0c87d1; /* Đổi màu link khi hover */
+  color: #0c87d1;
   text-decoration: underline;
-}
-
-.login-container {
-  font-family: Poppins, sans-serif;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #fff;
-}
-
-.header {
-  background-color: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  border-bottom: 1px solid #e0e0e0;
-  height: 60px;
-  width: 100%;
-  box-sizing: border-box;
-  position: fixed;
-  z-index: 1000;
-}
-
-.nav-left {
-  display: flex;
-  align-items: center;
 }
 
 .logo {
@@ -324,139 +320,4 @@
   height: 60px;
   object-fit: contain;
   cursor: pointer;
-}
-
-.nav-links a {
-  margin-left: 20px;
-  color: #4a3c8c;
-  text-decoration: none;
-  font-size: 14px;
-  padding: 5px 10px;
-}
-
-.nav-links a:hover {
-  color: #6b5b95;
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-}
-
-.login-btn-nav{
-  padding: 8px 15px;
-  margin-left: 10px;
-  background: linear-gradient(45deg, #a084ca, #6b5b95); /* Gradient nền */
-  border: 1px solid #a084ca;
-  border-radius: 20px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
-}
-
-.signup-btn {
-  padding: 8px 15px;
-  margin-left: 10px;
-  border: 1px solid #a084ca;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease; /* Hiệu ứng chuyển mượt */
-}
-
-.login-btn-nav:hover {
-  background: linear-gradient(45deg, #8a6ab7, #5a4a84); /* Gradient đổi khi hover */
-  transform: translateY(-2px); /* Nâng nhẹ */
-  color: #fff;
-}
-
-.signup-btn {
-  background-color: #fff;
-  color: #a084ca;
-}
-
-.signup-btn:hover {
-  transform: translateY(-2px); /* Nâng nhẹ */
-  background: linear-gradient(45deg, #dad8d956, #aaa9ab23); /* Gradient đổi khi hover */
-
-}
-
-.main-content {
-  flex: 1;
-  padding-top: 70px;
-}
-
-.footer {
-  background: #4a3c8c;
-  color: #fff;
-  padding: 20px 0;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  flex-wrap: wrap;
-}
-
-.footer-section {
-  flex: 1;
-  min-width: 200px;
-  margin: 10px 0;
-}
-
-.footer-section h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.footer-section h4 {
-  font-size: 14px;
-  margin-bottom: 5px;
-}
-
-.footer-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-section ul li {
-  margin-bottom: 5px;
-  font-size: 12px;
-  color: #ccc;
-}
-
-.footer-section ul li:hover {
-  color: #fff;
-}
-
-.footer-bottom {
-  text-align: center;
-  margin-top: 20px;
-  border-top: 1px solid #666;
-  padding-top: 10px;
-}
-
-.footer-bottom p {
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-
-.footer-links a {
-  color: #ccc;
-  margin: 0 10px;
-  text-decoration: none;
-  font-size: 12px;
-}
-
-.footer-links a:hover {
-  color: #fff;
 }

@@ -4,7 +4,37 @@
   flex-direction: row;
   justify-content: center;
   width: 100%;
+  height: 100vh; /* Chiều cao bằng viewport */
   position: relative;
+  overflow: hidden; /* Ngăn scroll */
+}
+
+/* Back Button for Register page */
+.back-btn-register {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(171, 159, 242, 0.1);
+  border: 1px solid #ab9ff2;
+  color: #ab9ff2;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 10;
+}
+
+.back-btn-register:hover {
+  background: #ab9ff2;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(171, 159, 242, 0.3);
 }
 
 /* Toast Notification Styles */
@@ -17,35 +47,34 @@
 }
 
 .toast-content {
-  border-radius: 12px;
-  padding: 16px 20px;
+  border-radius: 6px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 300px;
-  max-width: 400px;
+  gap: 8px;
+  min-width: 200px;
+  max-width: 280px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
 }
 
 .toast-content.success {
   background: linear-gradient(135deg, #4CAF50, #45a049);
-  box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
 }
 
 .toast-content.error {
   background: linear-gradient(135deg, #f44336, #d32f2f);
-  box-shadow: 0 8px 32px rgba(244, 67, 54, 0.3);
 }
 
 .toast-icon {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 16px;
+  font-size: 10px;
   font-weight: bold;
   flex-shrink: 0;
 }
@@ -56,14 +85,15 @@
 }
 
 .toast-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 1px;
 }
 
 .toast-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   opacity: 0.9;
+  line-height: 1.2;
 }
 
 @keyframes slideInRight {
@@ -79,7 +109,7 @@
 
 .register-student .div {
   background-color: #ffffff;
-  height: 1564px;
+  height: 100vh; /* Thay đổi từ 1564px thành 100vh */
   overflow: hidden;
   position: relative;
   width: 1440px;
@@ -88,10 +118,10 @@
 .register-student .overlap {
   background-color: #f8f9fa;
   border-radius: 25px;
-  height: 733px;
+  height: 94vh; /* Giảm chiều cao từ 733px */
   left: 421px;
   position: absolute;
-  top: 128px;
+  top: 3vh; /* Giảm từ 128px */
   width: 597px;
 }
 
@@ -100,117 +130,13 @@
   border-radius: 16px;
   box-shadow:
     0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 8px 32px #00000014;
-  height: 651px;
+  height: 88vh; /* Giảm chiều cao từ 651px */
   left: 78px;
   position: absolute;
-  top: 42px;
+  top: 3vh; /* Giảm từ 42px */
   width: 448px;
 }
 
-.register-student .rectangle-2 {
-  background-color: #e5e7eb;
-  height: 1px;
-  left: 111px;
-  position: absolute;
-  top: 288px;
-  width: 102px;
-}
-
-.register-student .rectangle-3 {
-  background-color: #e5e7eb;
-  height: 1px;
-
-/* Input field styles */
-.register-student input[type="email"],
-.register-student input[type="text"],
-.register-student input[type="password"] {
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid #e5e7eb;
-  padding: 10px 5px;
-  font-size: 14px;
-  width: 300px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.register-student input[type="email"]:focus,
-.register-student input[type="text"]:focus,
-.register-student input[type="password"]:focus {
-  border-bottom-color: #007bff;
-}
-
-.register-student input[type="email"]:disabled,
-.register-student input[type="text"]:disabled,
-.register-student input[type="password"]:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Specific input positioning */
-.register-student .text-wrapper-12 {
-  position: absolute;
-  top: 350px;
-  left: 140px;
-}
-
-.register-student .text-wrapper-name {
-  position: absolute;
-  top: 250px;
-  left: 140px;
-}
-
-.register-student .text-wrapper-13 {
-  position: absolute;
-  top: 450px;
-  left: 140px;
-}
-
-.register-student .text-wrapper-11 {
-  position: absolute;
-  top: 550px;
-  left: 140px;
-}
-
-/* Button styles */
-.register-student button[type="submit"] {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  position: absolute;
-  top: 620px;
-  left: 200px;
-}
-
-.register-student button[type="submit"]:hover:not(:disabled) {
-  background-color: #0056b3;
-}
-
-.register-student button[type="submit"]:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
-
-/* Error and success messages */
-.error-message,
-.success-message {
-  position: absolute;
-  top: 600px;
-  left: 140px;
-  font-size: 14px;
-  max-width: 300px;
-  text-align: center;
-}
-  left: 392px;
-  position: absolute;
-  top: 288px;
-  width: 102px;
-}
 
 .register-student .text-wrapper {
   color: #3c315b;
@@ -226,20 +152,6 @@
   white-space: nowrap;
 }
 
-.register-student .text-wrapper-2 {
-  color: #3c315b;
-  font-family: "Potta One-Regular", Helvetica;
-  font-size: 24px;
-  font-weight: 400;
-  left: 245px;
-  letter-spacing: 0;
-  line-height: 32px;
-  position: absolute;
-  text-align: center;
-  top: 102px;
-  white-space: nowrap;
-}
-
 .register-student .text-wrapper-3 {
   color: #3c315b;
   font-family: "Poppins-Bold", Helvetica;
@@ -250,7 +162,7 @@
   line-height: 32px;
   position: absolute;
   text-align: center;
-  top: 152px;
+  top: 22vh; 
   white-space: nowrap;
 }
 
@@ -264,47 +176,10 @@
   line-height: 26px;
   position: absolute;
   text-align: center;
-  top: 200px;
+  top: 25vh; /* Điều chỉnh vị trí */
   width: 380px;
 }
 
-.register-student .rectangle-4 {
-  background-color: #ffffff;
-  border: 2px solid;
-  border-color: #f0f0f0;
-  border-radius: 12px;
-  height: 52px;
-  left: 111px;
-  position: absolute;
-  top: 446px;
-  width: 384px;
-}
-
-.register-student .rectangle-5 {
-  background-color: #ab9ff2;
-  border-radius: 12px;
-  box-shadow:
-    0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 4px 16px #5ea4ff4c;
-  height: 48px;
-  left: 111px;
-  position: absolute;
-  top: 519px;
-  width: 384px;
-}
-
-.register-student .text-wrapper-4 {
-  color: #ffffff;
-  font-family: "Poppins-SemiBold", Helvetica;
-  font-size: 16px;
-  font-weight: 600;
-  left: 264px;
-  letter-spacing: 0;
-  line-height: 24px;
-  position: absolute;
-  text-align: center;
-  top: 530px;
-  white-space: nowrap;
-}
 
 .register-student .text-wrapper-5 {
   color: #666666;
@@ -316,576 +191,129 @@
   line-height: 20px;
   position: absolute;
   text-align: center;
-  top: 590px;
+  top: 80vh; /* Điều chỉnh từ 590px */
   white-space: nowrap;
 }
 
 .register-student .text-wrapper-6 {
   color: #5ea4ff;
   font-family: "Poppins-Medium", Helvetica;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 500;
   left: 375px;
   letter-spacing: 0;
   line-height: 20px;
   position: absolute;
   text-align: center;
-  top: 590px;
+  top: 80vh; /* Điều chỉnh từ 590px */
   white-space: nowrap;
 }
-
-.register-student .p {
-  color: #999999;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  left: 145px;
-  letter-spacing: 0;
-  line-height: 19.5px;
-  position: absolute;
-  text-align: center;
-  top: 634px;
-  white-space: nowrap;
-}
-
-.register-student .text-wrapper-7 {
-  color: #5ea4ff;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  left: 333px;
-  letter-spacing: 0;
-  line-height: 19.5px;
-  position: absolute;
-  text-align: center;
-  top: 634px;
-  white-space: nowrap;
-}
-
-.register-student .text-wrapper-8 {
-  color: #999999;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  left: 434px;
-  letter-spacing: 0;
-  line-height: 19.5px;
-  position: absolute;
-  text-align: center;
-  top: 634px;
-  white-space: nowrap;
-}
-
-.register-student .text-wrapper-9 {
-  color: #5ea4ff;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  left: 260px;
-  letter-spacing: 0;
-  line-height: 19.5px;
-  position: absolute;
-  text-align: center;
-  top: 653px;
-  white-space: nowrap;
-}
-
-.register-student .text-wrapper-10 {
-  color: #999999;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 12px;
-  font-weight: 400;
-  left: 341px;
-  letter-spacing: 0;
-  line-height: 19.5px;
-  position: absolute;
-  text-align: center;
-  top: 653px;
-  white-space: nowrap;
-}
-
-.register-student .text-wrapper-11 {
-  color: #999999;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  height: 24px;
-  left: 126px;
-  letter-spacing: 0;
-  line-height: normal;
-  position: absolute;
-  top: 457px;
-}
-
-.register-student .rectangle-6 {
+/* New clean input and button styles */
+.register-student .email-input,
+.register-student .password-input,
+.register-student .confirm-password-input {
   background-color: #ffffff;
-  border: 2px solid;
-  border-color: #f0f0f0;
+  border: 2px solid #f0f0f0;
   border-radius: 12px;
   height: 52px;
-  left: 111px;
-  position: absolute;
-  top: 312px;
-  width: 384px;
-}
-
-.register-student .text-wrapper-12 {
-  color: #999999;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  height: 24px;
-  left: 126px;
-  letter-spacing: 0;
-  line-height: normal;
-  position: absolute;
-  top: 323px;
-}
-
-.register-student .rectangle-7 {
-  background-color: #ffffff;
-  border: 2px solid;
-  border-color: #f0f0f0;
-  border-radius: 12px;
-  height: 52px;
-  left: 110px;
-  position: absolute;
-  top: 379px;
-  width: 384px;
-}
-
-.register-student .text-wrapper-13 {
-  color: #999999;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  height: 24px;
-  left: 126px;
-  letter-spacing: 0;
-  line-height: normal;
-  position: absolute;
-  top: 391px;
-}
-
-.register-student .overlap-group {
-  height: 554px;
-  left: -1px;
-  position: absolute;
-  top: 1010px;
-  width: 1440px;
-}
-
-.register-student .vector {
-  height: 12px;
-  left: 398px;
-  position: absolute;
-  top: 8px;
-  width: 8px;
-}
-
-.register-student .rectangle-8 {
-  background-color: #3c315b;
-  height: 554px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 1440px;
-}
-
-.register-student .text-wrapper-14 {
-  color: #ffffff;
-  font-family: "Potta One-Regular", Helvetica;
-  font-size: 25px;
-  font-weight: 400;
-  left: 50px;
-  letter-spacing: 0;
-  line-height: 25px;
-  position: absolute;
-  top: 67px;
-  white-space: nowrap;
-  width: 107px;
-}
-
-.register-student .text-wrapper-15 {
-  color: #ffffff;
-  font-family: "Potta One-Regular", Helvetica;
-  font-size: 25px;
-  font-weight: 400;
-  left: 50px;
-  letter-spacing: 0;
-  line-height: 25px;
-  position: absolute;
-  top: 96px;
-  white-space: nowrap;
-  width: 136px;
-}
-
-.register-student .text-wrapper-16 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 50px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 162px;
-  width: 274px;
-}
-
-.register-student .rectangle-9 {
-  background-color: #5ea4ff;
-  border-radius: 22369600px;
-  height: 47px;
-  left: 50px;
-  position: absolute;
-  top: 310px;
-  width: 46px;
-}
-
-.register-student .frame {
-  height: 23px;
-  left: 61px;
-  position: absolute;
-  top: 322px;
-  width: 23px;
-}
-
-.register-student .img {
-  height: 19px;
-  left: 0;
-  position: absolute;
-  top: 2px;
-  width: 23px;
-}
-
-.register-student .rectangle-10 {
-  background-color: #5ea4ff;
-  border-radius: 22369600px;
-  height: 47px;
-  left: 114px;
-  position: absolute;
-  top: 310px;
-  width: 46px;
-}
-
-.register-student .vector-wrapper {
-  height: 23px;
-  left: 125px;
-  position: absolute;
-  top: 322px;
-  width: 23px;
-}
-
-.register-student .vector-2 {
-  height: 16px;
-  left: 1px;
-  position: absolute;
-  top: 4px;
-  width: 20px;
-}
-
-.register-student .rectangle-11 {
-  background-color: #5ea4ff;
-  border-radius: 22369600px;
-  height: 47px;
-  left: 178px;
-  position: absolute;
-  top: 310px;
-  width: 46px;
-}
-
-.register-student .frame-2 {
-  background-image: url(./vector-4.svg);
-  background-size: 100% 100%;
-  height: 23px;
-  left: 190px;
-  position: absolute;
-  top: 322px;
-  width: 23px;
-}
-
-.register-student .text-wrapper-17 {
-  color: #ffffff;
-  font-family: "Poppins-SemiBold", Helvetica;
-  font-size: 18px;
-  font-weight: 600;
-  left: 394px;
-  letter-spacing: 0;
-  line-height: 27px;
-  position: absolute;
-  top: 74px;
-  white-space: nowrap;
-  width: 82px;
-}
-
-.register-student .text-wrapper-18 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 394px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 124px;
-  white-space: nowrap;
-  width: 80px;
-}
-
-.register-student .text-wrapper-19 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 394px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 168px;
-  white-space: nowrap;
-  width: 62px;
-}
-
-.register-student .text-wrapper-20 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 394px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 212px;
-  white-space: nowrap;
-  width: 27px;
-}
-
-.register-student .text-wrapper-21 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 394px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 257px;
-  white-space: nowrap;
-  width: 111px;
-}
-
-.register-student .text-wrapper-22 {
-  color: #ffffff;
-  font-family: "Poppins-SemiBold", Helvetica;
-  font-size: 18px;
-  font-weight: 600;
-  left: 738px;
-  letter-spacing: 0;
-  line-height: 27px;
-  position: absolute;
-  top: 74px;
-  white-space: nowrap;
-  width: 105px;
-}
-
-.register-student .text-wrapper-23 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 738px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 124px;
-  white-space: nowrap;
-  width: 83px;
-}
-
-.register-student .text-wrapper-24 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 738px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 168px;
-  white-space: nowrap;
-  width: 73px;
-}
-
-.register-student .text-wrapper-25 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 738px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 212px;
-  white-space: nowrap;
-  width: 40px;
-}
-
-.register-student .text-wrapper-26 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 738px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 257px;
-  white-space: nowrap;
-  width: 48px;
-}
-
-.register-student .text-wrapper-27 {
-  color: #ffffff;
-  font-family: "Poppins-SemiBold", Helvetica;
-  font-size: 18px;
-  font-weight: 600;
-  left: 1082px;
-  letter-spacing: 0;
-  line-height: 27px;
-  position: absolute;
-  top: 74px;
-  white-space: nowrap;
-  width: 85px;
-}
-
-.register-student .text-wrapper-28 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 1082px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 124px;
-  white-space: nowrap;
-  width: 109px;
-}
-
-.register-student .text-wrapper-29 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 1082px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 168px;
-  white-space: nowrap;
-  width: 102px;
-}
-
-.register-student .text-wrapper-30 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 1082px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 212px;
-  white-space: nowrap;
-  width: 125px;
-}
-
-.register-student .text-wrapper-31 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 1082px;
-  letter-spacing: 0;
-  line-height: 26px;
-  position: absolute;
-  top: 257px;
-  white-space: nowrap;
-  width: 152px;
-}
-
-.register-student .rectangle-12 {
-  border-color: #555555;
-  border-top-style: solid;
-  border-top-width: 0.67px;
-  height: 66px;
-  left: 50px;
-  position: absolute;
-  top: 413px;
-  width: 1340px;
-}
-
-.register-student .text-wrapper-32 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  left: 50px;
-  letter-spacing: 0;
-  line-height: 24px;
-  position: absolute;
-  top: 450px;
-  white-space: nowrap;
   width: 360px;
-}
-
-.register-student .text-wrapper-33 {
-  color: #cccccc;
+  position: absolute;
+  left: 111px;
+  padding: 0 15px;
+  color: #333333;
   font-family: "Poppins-Regular", Helvetica;
   font-size: 16px;
   font-weight: 400;
-  left: 1138px;
-  letter-spacing: 0;
-  line-height: 24px;
-  position: absolute;
-  top: 450px;
-  white-space: nowrap;
-  width: 67px;
+  outline: none;
+  transition: border-color 0.3s ease;
 }
 
-.register-student .text-wrapper-34 {
-  color: #cccccc;
-  font-family: "Poppins-Regular", Helvetica;
+.register-student .email-input {
+  top:37vh; /* Điều chỉnh từ 312px */
+}
+
+.register-student .password-input {
+  top: 48vh; /* Điều chỉnh từ 379px */
+}
+
+.register-student .confirm-password-input {
+  top: 59vh; /* Điều chỉnh từ 446px */
+}
+
+
+.register-student .email-input:focus,
+.register-student .password-input:focus,
+.register-student .confirm-password-input:focus {
+  border-color: #ab9ff2;
+}
+
+.register-student .email-input::placeholder,
+.register-student .password-input::placeholder,
+.register-student .confirm-password-input::placeholder {
+  color: #999999;
+}
+
+.register-student .submit-button {
+  background-color: #ab9ff2;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0px 4px 16px rgba(94, 164, 255, 0.3);
+  height: 48px;
+  width: 384px;
+  position: absolute;
+  left: 111px;
+  top: 70vh; /* Điều chỉnh từ 519px */
+  color: #ffffff;
+  font-family: "Poppins-SemiBold", Helvetica;
   font-size: 16px;
-  font-weight: 400;
-  left: 1232px;
-  letter-spacing: 0;
-  line-height: 24px;
-  position: absolute;
-  top: 450px;
-  white-space: nowrap;
-  width: 58px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
 }
 
-.register-student .text-wrapper-35 {
-  color: #cccccc;
+.register-student .submit-button:hover:not(:disabled) {
+  background-color: #9b8ff0;
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 20px rgba(94, 164, 255, 0.4);
+}
+
+.register-student .submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Terms and Policy styling */
+.register-student .terms-policy-text {
+  color: #999999;
   font-family: "Poppins-Regular", Helvetica;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
-  left: 1316px;
+  left: 111px;
   letter-spacing: 0;
-  line-height: 24px;
+  line-height: 18px;
   position: absolute;
-  top: 450px;
-  white-space: nowrap;
-  width: 74px;
+  text-align: center;
+  top: 85vh; /* Điều chỉnh từ 634px */
+  width: 384px;
 }
 
-.register-student .vector-3 {
-  height: 5px;
-  left: 638px;
-  position: absolute;
-  top: 973px;
-  width: 3px;
+.register-student .terms-link,
+.register-student .privacy-link {
+  color: #5ea4ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-student .terms-link:hover,
+.register-student .privacy-link:hover {
+  text-decoration: underline;
+}
+/* Thêm CSS cho logo */
+.register-student .logo {
+  width: 170px;
+  height: auto;
+  object-fit: center;
 }

@@ -80,6 +80,10 @@ export const CompleteQuestion = () => {
     window.location.href = '/survey';
   };
 
+  const handleGoToTutorial = () => {
+    window.location.href = '/tutorial';
+  };
+
   return (
     <>
       <ToastContainer toasts={toasts} removeToast={removeToast} />
@@ -121,6 +125,9 @@ export const CompleteQuestion = () => {
 
           <div className="overlap-2" onClick={handleRetakeSurvey} style={{ cursor: 'pointer' }}>
             <div className="text-wrapper-5">Làm lại khảo sát</div>
+          </div>
+          <div className="overlap-3" onClick={handleGoToTutorial} style={{ cursor: 'pointer' }}>
+            <div className="text-wrapper-6">Đến trang dự đoán</div>
           </div>
         </div>
       </div>

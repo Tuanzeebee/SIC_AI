@@ -53,7 +53,8 @@ const CsvUpload: React.FC = () => {
       <div className="csv-upload-card">
         <h2>Upload CSV File</h2>
         <p className="description">
-          Upload file CSV để tạo dữ liệu cho 3 bảng: ScoreRecord, PredictionInputReverse, và PredictionInputScore
+          Upload file CSV để tạo dữ liệu cho 3 bảng: ScoreRecord, PredictionInputReverse, và PredictionInputScore. 
+          Hỗ trợ tài chính và tinh thần sẽ được lấy từ kết quả khảo sát gần nhất của người dùng.
         </p>
 
         <div className="form-group">
@@ -171,11 +172,10 @@ const CsvUpload: React.FC = () => {
             <li><strong>credits_unit</strong> - Số tín chỉ</li>
             <li><strong>raw_score</strong> - Điểm số</li>
             <li><strong>part_time_hours</strong> - Giờ làm thêm</li>
-            <li><strong>financial_support</strong> - Hỗ trợ tài chính (1-3)</li>
-            <li><strong>emotional_support</strong> - Hỗ trợ tinh thần (1-3)</li>
             <li><strong>weekly_study_hours</strong> - Giờ học/tuần</li>
             <li><strong>attendance_percentage</strong> - Tỷ lệ tham dự (%)</li>
           </ul>
+          <p><strong>Lưu ý:</strong> Hỗ trợ tài chính và tinh thần sẽ được lấy từ kết quả khảo sát gần nhất của bạn.</p>
         </div>
       </div>
     </div>

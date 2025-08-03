@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import './Register.css';
-import logoGoogle from '../assets/logo_gg.png'; 
 import Logo from "../assets/LogoPredica.png";
 import { authApi } from '../services/api';
 import type { RegisterData } from '../services/api';
@@ -14,7 +13,6 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
 
@@ -83,8 +81,7 @@ const Register: React.FC = () => {
         name: formData.email
       };
       
-      const response = await authApi.register(registrationData);
-      setSuccess(response.message);
+      await authApi.register(registrationData);
       setShowToast(true);
       
       // Clear form after successful registration
@@ -114,6 +111,15 @@ const Register: React.FC = () => {
 
   return (
    <div className="register-student">
+      {/* Back Button */}
+      <button 
+        className="back-btn-register"
+        onClick={() => window.location.href = '/'}
+        title="Quay lại trang chủ"
+      >
+        ← Quay lại
+      </button>
+
       {/* Success Toast */}
       {showToast && (
         <div className="toast-notification">
@@ -159,61 +165,44 @@ const Register: React.FC = () => {
 
           <form onSubmit={handleSubmit}>
             {/* Email Input */}
-            <div className="rectangle-6" />
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               placeholder="Enter your DTU email"
-              className="text-wrapper-12"
+              className="email-input"
               disabled={loading}
               required
             />
 
             {/* Password Input */}
-            <div className="rectangle-7" />
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Enter your password"
-              className="text-wrapper-13"
+              className="password-input"
               disabled={loading}
               required
             />
 
             {/* Confirm Password Input */}
-            <div className="rectangle-5" />
             <input
               type="password"
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
               placeholder="Confirm password"
-              className="text-wrapper-11"
+              className="confirm-password-input"
               disabled={loading}
               required
             />
 
-            {/* Error Message */}
-            {error && (
-              <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>
-                {error}
-              </div>
-            )}
-
-            {/* Success Message */}
-            {success && (
-              <div className="success-message" style={{ color: 'green', marginTop: '10px' }}>
-                {success}
-              </div>
-            )}
-
             {/* Submit Button */}
             <button 
               type="submit" 
-              className="text-wrapper-4"
+              className="submit-button"
               disabled={loading}
             >
               {loading ? 'Đang xử lý...' : 'Continue'}
@@ -223,11 +212,12 @@ const Register: React.FC = () => {
           <div className="text-wrapper-5">Already have an account?</div>
           <a href="/login" className="text-wrapper-6">Log in</a>
 
-          <p className="p">By signing up, you agree to our</p>
-          <div className="text-wrapper-7">Terms of Service</div>
-          <div className="text-wrapper-8">and</div>
-          <div className="text-wrapper-9">Privacy Policy</div>
-          <div className="text-wrapper-10">.</div>
+          <div className="terms-policy-text">
+            By signing up, you agree to our{' '}
+            <a href="#" className="terms-link">Terms of Service</a>
+            {' '}and{' '}
+            <a href="#" className="privacy-link">Privacy Policy</a>.
+          </div>
         </div>
       </div>
     </div>

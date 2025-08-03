@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { scoreRecordApi } from "../services/api";
+import React, { useState, useEffect } from "react";
+import { scoreRecordApi, partTimeHourSaveApi } from "../services/api";
+import type { ScoreRecord } from "../services/api";
 import "./TutorialPrediction.css";
 
 // Import placeholder images - you may need to replace these with actual image paths
@@ -14,6 +15,17 @@ export const Tutorial = (): React.JSX.Element => {
   const [activeTab, setActiveTab] = useState<string>('tutorial');
   const [viewMode, setViewMode] = useState<string>('semester'); // 'semester' for Theo Kỳ, 'full' for Full
   const [partTimeHours, setPartTimeHours] = useState<number>(0);
+  
+  // New state for semester-specific part-time hours
+  const [semesterPartTimeHours, setSemesterPartTimeHours] = useState<{[key: string]: number}>({});
+  
+  // State for data fetching
+  const [isFetchingData, setIsFetchingData] = useState(false);
+  const [scoreRecords, setScoreRecords] = useState<ScoreRecord[]>([]);
+  const [dataMessage, setDataMessage] = useState<string>('');
+  
+  // New state for available semesters from API
+  const [availableSemesters, setAvailableSemesters] = useState<Array<{year: string, semesterNumber: number, label: string}>>([]);
 
   // Get user from localStorage
   const getUserId = (): number | null => {
@@ -28,6 +40,77 @@ export const Tutorial = (): React.JSX.Element => {
     }
     return null;
   };
+
+  // Fetch available semesters from API
+  const fetchAvailableSemesters = async () => {
+    const userId = getUserId();
+    if (!userId) return;
+
+    try {
+      const result = await partTimeHourSaveApi.getUserSemesters(userId);
+      if (result.success) {
+        setAvailableSemesters(result.data);
+      }
+    } catch (error) {
+      console.error('Error fetching semesters:', error);
+    }
+  };
+
+  // Helper function to get unique semesters - now uses API data
+  const getUniqueSemesters = (): Array<{year: string, semesterNumber: number, label: string}> => {
+    // Use API data if available, otherwise fallback to scoreRecords
+    if (availableSemesters.length > 0) {
+      // Process API data to convert HK3 to HK Hè
+      return availableSemesters.map(semester => ({
+        ...semester,
+        label: semester.semesterNumber === 3 
+          ? `HK Hè-${semester.year}` 
+          : semester.label.includes('HK3') 
+            ? semester.label.replace('HK3', 'HK Hè')
+            : semester.label
+      }));
+    }
+
+    // Fallback to the old method using scoreRecords
+    const semesterSet = new Set<string>();
+    const semesters: Array<{year: string, semesterNumber: number, label: string}> = [];
+    
+    scoreRecords.forEach(record => {
+      const key = `${record.year}-HK${record.semesterNumber}`;
+      if (!semesterSet.has(key)) {
+        semesterSet.add(key);
+        const semesterLabel = record.semesterNumber === 3 ? 'HK Hè' : `HK${record.semesterNumber}`;
+        semesters.push({
+          year: record.year,
+          semesterNumber: record.semesterNumber,
+          label: `${semesterLabel}-${record.year}`
+        });
+      }
+    });
+    
+    // Sort by year and semester
+    semesters.sort((a, b) => {
+      if (a.year !== b.year) {
+        return a.year.localeCompare(b.year);
+      }
+      return a.semesterNumber - b.semesterNumber;
+    });
+    
+    return semesters;
+  };
+
+  // Handle semester-specific part-time hours change
+  const handleSemesterPartTimeChange = (semesterKey: string, value: number) => {
+    setSemesterPartTimeHours(prev => ({
+      ...prev,
+      [semesterKey]: value
+    }));
+  };
+
+  // Auto-fetch semesters when component mounts
+  useEffect(() => {
+    fetchAvailableSemesters();
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -80,6 +163,88 @@ export const Tutorial = (): React.JSX.Element => {
       setMessage('Lỗi khi tải lên file. Vui lòng thử lại.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleFetchData = async () => {
+    const userId = getUserId();
+    if (!userId) {
+      setDataMessage('Vui lòng đăng nhập để xem dữ liệu');
+      return;
+    }
+
+    setIsFetchingData(true);
+    setDataMessage("");
+
+    try {
+      // Fetch available semesters first
+      await fetchAvailableSemesters();
+
+      // Update part-time hours in database first
+      const updateData = {
+        userId,
+        partTimeHours,
+        viewMode: viewMode as 'semester' | 'full',
+        semesterPartTimeHours: viewMode === 'semester' ? semesterPartTimeHours : undefined
+      };
+
+      console.log('Sending update data:', updateData); // Debug log
+
+      const updateResult = await partTimeHourSaveApi.updatePartTimeHours(updateData);
+      console.log('Update result:', updateResult); // Debug log
+      
+      if (!updateResult.success) {
+        console.error('Update error:', updateResult.message); // Debug log
+        setDataMessage(`Lỗi khi lưu part-time hours: ${updateResult.message}`);
+        return;
+      }
+
+      // Fetch ScoreRecord data
+      const scoreRecordsResult = await scoreRecordApi.getByUserId(userId);
+      console.log('Score records result:', scoreRecordsResult); // Debug log
+      
+      if (scoreRecordsResult.success) {
+        setScoreRecords(scoreRecordsResult.data);
+      }
+
+      // Filter data based on viewMode if needed
+      let filteredScoreRecords = scoreRecordsResult.data || [];
+
+      if (viewMode === 'semester') {
+        // Generate semester summary message
+        const uniqueSemesters = getUniqueSemesters();
+        const semesterSummary = uniqueSemesters.map(semester => {
+          const semesterKey = `${semester.year}-HK${semester.semesterNumber}`;
+          const hours = semesterPartTimeHours[semesterKey] || 0;
+          return `${semester.label}: ${hours}h`;
+        }).join(', ');
+        
+        setDataMessage(`Đã tải và lưu dữ liệu theo kỳ: ${filteredScoreRecords.length} bản ghi điểm. Part-time: ${semesterSummary}`);
+      } else {
+        // Full mode - show all data
+        setDataMessage(`Đã tải và lưu toàn bộ dữ liệu: ${filteredScoreRecords.length} bản ghi điểm. Thời gian làm part-time: ${partTimeHours} giờ/tuần đã được cập nhật vào database`);
+      }
+
+      console.log('ScoreRecords:', filteredScoreRecords);
+      console.log('ViewMode:', viewMode);
+      console.log('PartTimeHours:', partTimeHours);
+      console.log('Update Result:', updateResult);
+
+    } catch (error: any) {
+      console.error('Fetch data error:', error);
+      // More detailed error logging
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        setDataMessage(`Lỗi API: ${error.response.data.message || error.message}`);
+      } else if (error.request) {
+        console.error('Error request:', error.request);
+        setDataMessage('Lỗi kết nối tới server. Vui lòng kiểm tra backend có đang chạy không.');
+      } else {
+        console.error('Error message:', error.message);
+        setDataMessage('Lỗi khi tải dữ liệu. Vui lòng thử lại.');
+      }
+    } finally {
+      setIsFetchingData(false);
     }
   };
 
@@ -256,42 +421,6 @@ export const Tutorial = (): React.JSX.Element => {
   const OverviewScore = (): React.JSX.Element => {
     return (
       <div className="frame">
-        <div className="frame-wrapper">
-          <div className="div">
-            <div className="div-2" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <input
-                type="radio"
-                id="semester-mode"
-                name="viewMode"
-                value="semester"
-                checked={viewMode === 'semester'}
-                onChange={(e) => setViewMode(e.target.value)}
-                style={{ margin: '0' }}
-              />
-              <label htmlFor="semester-mode" style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                <div className="text-wrapper">📚</div>
-                <div className="text-wrapper-2">Theo Kỳ</div>
-              </label>
-            </div>
-
-            <div className="div-3" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <input
-                type="radio"
-                id="full-mode"
-                name="viewMode"
-                value="full"
-                checked={viewMode === 'full'}
-                onChange={(e) => setViewMode(e.target.value)}
-                style={{ margin: '0' }}
-              />
-              <label htmlFor="full-mode" style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                <div className="text-wrapper-3">🎯</div>
-                <div className="text-wrapper-4">Full</div>
-              </label>
-            </div>
-          </div>
-        </div>
-
         <div className="div-4">
           <div className="overlap-group-wrapper">
             <div className="overlap-group">
@@ -388,8 +517,6 @@ export const Tutorial = (): React.JSX.Element => {
             </div>
           </div>
         </div>
-
-        {/* Additional Information Section - Moved to bottom */}
         <div style={{
           backgroundColor: '#f8fafc',
           padding: '20px',
@@ -412,41 +539,243 @@ export const Tutorial = (): React.JSX.Element => {
             flexDirection: 'column',
             gap: '12px'
           }}>
-            <label style={{
+            <p style={{
               color: '#374151',
               fontSize: '14px',
-              fontWeight: '500'
+              margin: 0,
+              lineHeight: '1.4'
             }}>
-              Thời gian đi làm (giờ/tuần)
-            </label>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <input
-                type="number"
-                min="0"
-                max="60"
-                value={partTimeHours}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value) || 0;
-                  if (value >= 0 && value <= 60) {
-                    setPartTimeHours(value);
-                  }
-                }}
-                style={{
-                  padding: '8px 12px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  width: '80px',
-                  textAlign: 'center'
-                }}
-                placeholder="0"
-              />
-              <span style={{ color: '#6b7280', fontSize: '14px' }}>giờ/tuần</span>
-              <span style={{ color: '#9ca3af', fontSize: '12px' }}>(0-60 giờ)</span>
-            </div>
+              Sử dụng biểu mẫu bên dưới để tạo prediction mới cho học kỳ hoặc toàn khóa học.
+            </p>
           </div>
         </div>
+        {/* Mode Selection - Moved below div-4 */}
+        <div style={{
+          backgroundColor: '#ffffff',
+          padding: '20px',
+          marginTop: '20px',
+          borderRadius: '12px',
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+        }}>
+          <h4 style={{
+            color: '#3C315B',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            marginBottom: '16px',
+            margin: '0 0 16px 0'
+          }}>
+            Chế độ xem dữ liệu
+          </h4>
+          
+          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+            <div className="div-2" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input
+                type="radio"
+                id="semester-mode"
+                name="viewMode"
+                value="semester"
+                checked={viewMode === 'semester'}
+                onChange={(e) => setViewMode(e.target.value)}
+                style={{ margin: '0' }}
+              />
+              <label htmlFor="semester-mode" style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                <div className="text-wrapper">📚</div>
+                <div className="text-wrapper-2">Theo Kỳ</div>
+              </label>
+            </div>
+
+            <div className="div-3" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input
+                type="radio"
+                id="full-mode"
+                name="viewMode"
+                value="full"
+                checked={viewMode === 'full'}
+                onChange={(e) => setViewMode(e.target.value)}
+                style={{ margin: '0' }}
+              />
+              <label htmlFor="full-mode" style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                <div className="text-wrapper-3">🎯</div>
+                <div className="text-wrapper-4">Full</div>
+              </label>
+            </div>
+          </div>
+
+          {/* Data Message */}
+          {dataMessage && (
+            <div style={{
+              padding: '12px 20px',
+              margin: '0 0 16px 0',
+              borderRadius: '8px',
+              backgroundColor: dataMessage.includes('Lỗi') ? '#fee2e2' : '#d1fae5',
+              color: dataMessage.includes('Lỗi') ? '#dc2626' : '#065f46',
+              border: `1px solid ${dataMessage.includes('Lỗi') ? '#fca5a5' : '#a7f3d0'}`,
+              fontSize: '14px',
+              fontWeight: '500',
+              textAlign: 'center'
+            }}>
+              {dataMessage}
+            </div>
+          )}
+
+          {/* Part Time Hours Input */}
+          <div style={{ marginTop: '20px' }}>
+            {viewMode === 'semester' ? (
+              // Semester mode - show inputs for each semester
+              <div>
+                <h5 style={{
+                  color: '#374151',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  marginBottom: '16px',
+                  margin: '0 0 16px 0'
+                }}>
+                  Thời gian đi làm theo từng học kỳ
+                </h5>
+                {getUniqueSemesters().map((semester) => {
+                  const semesterKey = `${semester.year}-HK${semester.semesterNumber}`;
+                  return (
+                    <div key={semesterKey} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: '12px',
+                      padding: '12px',
+                      backgroundColor: '#f9fafb',
+                      borderRadius: '8px',
+                      border: '1px solid #e5e7eb'
+                    }}>
+                      <span style={{
+                        color: '#374151',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        minWidth: '120px'
+                      }}>
+                        {semester.label}
+                      </span>
+                      <span style={{
+                        color: '#6b7280',
+                        fontSize: '14px',
+                        marginRight: '8px'
+                      }}>
+                        Thời gian đi làm
+                      </span>
+                      <select
+                        value={semesterPartTimeHours[semesterKey] || 0}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value) || 0;
+                          handleSemesterPartTimeChange(semesterKey, value);
+                        }}
+                        style={{
+                          padding: '8px 10px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          width: '90px',
+                          textAlign: 'center',
+                          backgroundColor: 'white',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {Array.from({ length: 61 }, (_, i) => (
+                          <option key={i} value={i}>
+                            {i}
+                          </option>
+                        ))}
+                      </select>
+                      <span style={{ color: '#6b7280', fontSize: '14px' }}>giờ/tuần</span>
+                    </div>
+                  );
+                })}
+                {getUniqueSemesters().length === 0 && (
+                  <div style={{
+                    padding: '16px',
+                    backgroundColor: '#fef3c7',
+                    borderRadius: '8px',
+                    border: '1px solid #f59e0b',
+                    textAlign: 'center'
+                  }}>
+                    <span style={{ color: '#92400e', fontSize: '14px' }}>
+                      Vui lòng tải dữ liệu trước để hiển thị các học kỳ
+                    </span>
+                  </div>
+                )}
+                <div style={{
+                  marginTop: '12px',
+                  textAlign: 'center'
+                }}>
+                  <span style={{ color: '#9ca3af', fontSize: '12px' }}>(0-60 giờ)</span>
+                </div>
+              </div>
+            ) : (
+              // Full mode - show single input
+              <div>
+                <label style={{
+                  color: '#374151',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  display: 'block',
+                  marginBottom: '8px'
+                }}>
+                  Thời gian đi làm (giờ/tuần)
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <select
+                    value={partTimeHours}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value) || 0;
+                      setPartTimeHours(value);
+                    }}
+                    style={{
+                      padding: '10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      width: '120px',
+                      textAlign: 'center',
+                      backgroundColor: 'white',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {Array.from({ length: 61 }, (_, i) => (
+                      <option key={i} value={i}>
+                        {i}
+                      </option>
+                    ))}
+                  </select>
+                  <span style={{ color: '#6b7280', fontSize: '14px' }}>giờ/tuần</span>
+                  <span style={{ color: '#9ca3af', fontSize: '12px' }}>(0-60 giờ)</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Confirm Button */}
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button
+              onClick={handleFetchData}
+              disabled={isFetchingData}
+              style={{
+                padding: '12px 30px',
+                fontSize: '14px',
+                backgroundColor: isFetchingData ? '#6b7280' : '#3C315B',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isFetchingData ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {isFetchingData ? 'Đang tải dữ liệu...' : 'Xác nhận'}
+            </button>
+          </div>
+        </div>
+
+
+
+        {/* Additional Information Section - Moved to bottom */}
       </div>
     );
   };

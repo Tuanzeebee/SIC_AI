@@ -71,19 +71,19 @@ export const Home: React.FC = () => {
           </p>
 
           <div className="group-3">
-            <div className="overlap-group-wrapper">
-              <div className="div-wrapper" onClick={handleStartPredicting} style={{ cursor: 'pointer' }}>
+            <button className="overlap-group-wrapper" onClick={handleStartPredicting}>
+              <div className="div-wrapper">
                 <div className="text-wrapper-2">
-                  {user ? 'Start Predicting' : 'Đăng nhập để dự đoán'}
+                  {user ? 'Start Predicting' : 'Đăng nhập'}
                 </div>
               </div>
-            </div>
+            </button>
 
-            <div className="overlap-wrapper">
+            <button className="overlap-wrapper">
               <div className="overlap-2">
                 <div className="text-wrapper-3">Watch Demo</div>
               </div>
-            </div>
+            </button>
           </div>
 
           <div className="group-4">
