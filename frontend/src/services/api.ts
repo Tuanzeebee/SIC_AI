@@ -306,6 +306,86 @@ export const partTimeHourSaveApi = {
     const response = await api.post('/api/part-time-hour-saves/update-part-time-hours-with-smart-prediction', data);
     return response.data;
   },
+
+  // Check if user has partTimeHours data in PredictionInputReverse table
+  checkPartTimeHoursExists: async (userId: number): Promise<{ success: boolean; hasPartTimeHours: boolean; message?: string }> => {
+    const response = await api.get(`/api/part-time-hour-saves/check-part-time-hours/${userId}`);
+    return response.data;
+  },
+};
+
+// Prediction Reverse API
+export const predictionReverseApi = {
+  // Get latest prediction with results
+  getLatest: async (): Promise<{ success: boolean; data: any; message?: string }> => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) throw new Error('User not found');
+    const user = JSON.parse(userStr);
+    
+    const response = await api.get('/api/prediction-reverse/latest', {
+      headers: { 'user-id': user.id.toString() }
+    });
+    return { success: true, data: response.data };
+  },
+
+  // Get all completed predictions
+  getAllCompleted: async (): Promise<{ success: boolean; data: any[]; message?: string }> => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) throw new Error('User not found');
+    const user = JSON.parse(userStr);
+    
+    const response = await api.get('/api/prediction-reverse/completed', {
+      headers: { 'user-id': user.id.toString() }
+    });
+    return { success: true, data: response.data };
+  },
+};
+
+// Prediction Input Score API  
+export const predictionInputScoreApi = {
+  // Create from reverse prediction (single)
+  createFromReverse: async (reverseInputId: number): Promise<{ success: boolean; data: any; message?: string }> => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) throw new Error('User not found');
+    const user = JSON.parse(userStr);
+    
+    const response = await api.post('/api/prediction-input-score/from-reverse', 
+      { reverseInputId },
+      { headers: { 'user-id': user.id.toString() } }
+    );
+    return { success: true, data: response.data };
+  },
+
+  // Create from ALL reverse predictions (with selective overwrite)
+  createFromAllReverse: async (): Promise<{ 
+    success: boolean; 
+    created: number; 
+    overwritten: number;
+    skipped: number; 
+    message: string; 
+  }> => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) throw new Error('User not found');
+    const user = JSON.parse(userStr);
+    
+    const response = await api.post('/api/prediction-input-score/from-all-reverse', 
+      {},
+      { headers: { 'user-id': user.id.toString() } }
+    );
+    return response.data;
+  },
+
+  // Get all prediction input scores
+  getAll: async (): Promise<{ success: boolean; data: any[]; message?: string }> => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) throw new Error('User not found');
+    const user = JSON.parse(userStr);
+    
+    const response = await api.get('/api/prediction-input-score', {
+      headers: { 'user-id': user.id.toString() }
+    });
+    return { success: true, data: response.data };
+  },
 };
 
 export default api;

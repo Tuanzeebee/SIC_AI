@@ -26,9 +26,8 @@ export class SurveyAnalysisService {
       }
 
       // Kiểm tra xem đã có phân tích cho user này chưa
-      const existingAnalysis = await this.prisma.surveyAnalysisResult.findFirst({
-        where: { userId },
-        orderBy: { createdAt: 'desc' }
+      const existingAnalysis = await this.prisma.surveyAnalysisResult.findUnique({
+        where: { userId }
       });
 
       // Nếu đã có phân tích và survey response mới nhất không mới hơn phân tích, trả về kết quả cũ
@@ -108,16 +107,15 @@ Chỉ trả JSON kết quả như sau (không có text khác):
       const emotionalLevel = Math.max(0, Math.min(3, parseInt(parsed.emotional) || 1));
       const financialLevel = Math.max(0, Math.min(3, parseInt(parsed.financial) || 1));
 
-      // Xóa phân tích cũ nếu có
-      if (existingAnalysis) {
-        await this.prisma.surveyAnalysisResult.delete({
-          where: { id: existingAnalysis.id }
-        });
-      }
-
-      // Tạo phân tích mới
-      const analysisResult = await this.prisma.surveyAnalysisResult.create({
-        data: {
+      // Sử dụng upsert để tránh unique constraint violation
+      const analysisResult = await this.prisma.surveyAnalysisResult.upsert({
+        where: { userId },
+        update: {
+          emotionalLevel,
+          financialLevel,
+          updatedAt: new Date()
+        },
+        create: {
           userId,
           emotionalLevel,
           financialLevel,

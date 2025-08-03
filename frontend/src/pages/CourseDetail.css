@@ -1,3 +1,29 @@
+.back-btn {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  background: rgba(160, 132, 202, 0.1);
+  border: 1px solid #a084ca;
+  color: #a084ca;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: "Poppins-Medium", Helvetica;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 10;
+}
+
+.back-btn:hover {
+  background: #a084ca;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(160, 132, 202, 0.3);
+}
 .course-detail {
   background-color: #ffffff;
   display: flex;
@@ -7,7 +33,7 @@
 
 .course-detail .div {
   background-color: #ffffff;
-  height: 2233px;
+  height: 2010px;
   overflow: hidden;
   position: relative;
   width: 1440px;
@@ -23,7 +49,7 @@
   height: 570px;
   left: 102px;
   position: absolute;
-  top: 150px;
+  top: 20px;
   width: 1245px;
 }
 
@@ -498,7 +524,7 @@
   line-height: 28px;
   position: absolute;
   text-align: center;
-  top: 3px;
+  top: 10px;
   width: 143px;
 }
 
@@ -712,7 +738,7 @@
   height: 841px;
   left: 102px;
   position: absolute;
-  top: 842px;
+  top: 630px;
   width: 1245px;
 }
 
@@ -776,19 +802,6 @@
   width: 16px;
 }
 
-.course-detail .rectangle-9 {
-  background-color: #ffffff;
-  border: 1px solid;
-  border-color: #e5e7eb;
-  border-radius: 8px;
-  box-shadow:
-    0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 0px 0px transparent, 0px 1px 2px #0000001a, 0px 1px 3px #0000001a;
-  height: 841px;
-  left: -1px;
-  position: absolute;
-  top: -1px;
-  width: 1245px;
-}
 
 .course-detail .rectangle-10 {
   border: 1px solid;
@@ -1016,7 +1029,7 @@
   letter-spacing: 0;
   line-height: 20px;
   position: absolute;
-  top: 107px;
+  top: 120px;
   width: 316px;
 }
 
@@ -1102,7 +1115,7 @@
   letter-spacing: 0;
   line-height: 20px;
   position: absolute;
-  top: 592px;
+  top: 605px;
   width: 142px;
 }
 
@@ -1180,7 +1193,7 @@
   letter-spacing: 0;
   line-height: 20px;
   position: absolute;
-  top: 681px;
+  top: 695px;
   width: 200px;
 }
 
@@ -1258,7 +1271,7 @@
   letter-spacing: 0;
   line-height: 20px;
   position: absolute;
-  top: 771px;
+  top: 785px;
   width: 225px;
 }
 
@@ -1290,7 +1303,7 @@
   height: 478px;
   left: 102px;
   position: absolute;
-  top: 1712px;
+  top: 1510px;
   width: 1245px;
 }
 

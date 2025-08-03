@@ -273,4 +273,19 @@ export class PartTimeHourSaveController {
       };
     }
   }
+
+  @Get('check-part-time-hours/:userId')
+  @HttpCode(HttpStatus.OK)
+  async checkPartTimeHoursExists(@Param('userId', ParseIntPipe) userId: number) {
+    try {
+      const result = await this.partTimeHourSaveService.checkPartTimeHoursExists(userId);
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        hasPartTimeHours: false,
+        message: error.message || 'Lỗi khi kiểm tra dữ liệu part-time hours',
+      };
+    }
+  }
 }

@@ -155,6 +155,48 @@ export class PredictionReverseService {
     }
   }
 
+  async getLatestPredictionReverse(userId: number): Promise<PredictionReverseResponseDto | null> {
+    try {
+      const latestInput = await this.prisma.predictionInputReverse.findFirst({
+        where: { 
+          userId,
+          predictedWeeklyStudyHours: { not: null },
+          predictedAttendancePercentage: { not: null }
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return latestInput;
+    } catch (error) {
+      console.error('Error in getLatestPredictionReverse:', error);
+      throw new HttpException(
+        'Failed to get latest reverse prediction',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async getAllCompletedPredictionReverse(userId: number): Promise<PredictionReverseResponseDto[]> {
+    try {
+      const completedInputs = await this.prisma.predictionInputReverse.findMany({
+        where: { 
+          userId,
+          predictedWeeklyStudyHours: { not: null },
+          predictedAttendancePercentage: { not: null }
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return completedInputs;
+    } catch (error) {
+      console.error('Error in getAllCompletedPredictionReverse:', error);
+      throw new HttpException(
+        'Failed to get completed reverse predictions',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async deletePredictionReverse(userId: number, id: number): Promise<void> {
     try {
       const prediction = await this.prisma.predictionInputReverse.findFirst({

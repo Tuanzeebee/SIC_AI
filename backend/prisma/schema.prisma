@@ -45,7 +45,6 @@ model ScoreRecord {
 model PredictionInputReverse {
   id                            Int                    @id @default(autoincrement())
   userId                        Int
-  year                          String
   semesterNumber                Int
   courseCode                    String
   studyFormat                   String
@@ -64,6 +63,7 @@ model PredictionInputReverse {
   mode                          String
   createdAt                     DateTime               @default(now())
   updatedAt                     DateTime               @updatedAt
+  year                          String
   user                          User                   @relation(fields: [userId], references: [id])
   inputScores                   PredictionInputScore[]
 }
@@ -72,7 +72,6 @@ model PredictionInputScore {
   id                          Int                     @id @default(autoincrement())
   userId                      Int
   reverseInputId              Int?
-  year                        String
   semesterNumber              Int
   courseCode                  String
   studyFormat                 String
@@ -90,22 +89,25 @@ model PredictionInputScore {
   mode                        String
   createdAt                   DateTime                @default(now())
   updatedAt                   DateTime                @updatedAt
+  year                        String
   predictedScore              PredictedScore?
   reverseInput                PredictionInputReverse? @relation(fields: [reverseInputId], references: [id])
   user                        User                    @relation(fields: [userId], references: [id])
 }
 
 model PredictedScore {
-  id             Int                  @id @default(autoincrement())
-  userId         Int
-  inputScoreId   Int                  @unique
-  scoreRecordId  Int?                 @unique
-  predictedScore Float
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  inputScore     PredictionInputScore @relation(fields: [inputScoreId], references: [id])
-  scoreRecord    ScoreRecord?         @relation(fields: [scoreRecordId], references: [id])
-  user           User                 @relation(fields: [userId], references: [id])
+  id                             Int                  @id @default(autoincrement())
+  userId                         Int
+  inputScoreId                   Int                  @unique
+  scoreRecordId                  Int?                 @unique
+  predictedScore                 Float
+  createdAt                      DateTime             @default(now())
+  updatedAt                      DateTime             @updatedAt
+  PredictedconvertedNumericScore Float?
+  PredictedconvertedScore        String?
+  inputScore                     PredictionInputScore @relation(fields: [inputScoreId], references: [id])
+  scoreRecord                    ScoreRecord?         @relation(fields: [scoreRecordId], references: [id])
+  user                           User                 @relation(fields: [userId], references: [id])
 }
 
 model SurveyQuestion {

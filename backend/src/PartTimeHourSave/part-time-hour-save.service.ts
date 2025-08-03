@@ -739,4 +739,44 @@ export class PartTimeHourSaveService {
       throw new Error('Lỗi khi cập nhật part-time hours và tự động dự đoán: ' + error.message);
     }
   }
+
+  // Check if user has partTimeHours data in PredictionInputReverse table
+  async checkPartTimeHoursExists(userId: number): Promise<{ success: boolean; hasPartTimeHours: boolean; message?: string }> {
+    try {
+      const recordsWithPartTimeHours = await this.prisma.predictionInputReverse.findMany({
+        where: {
+          userId,
+          partTimeHours: {
+            not: null,
+            gt: 0
+          }
+        },
+        select: {
+          id: true,
+          partTimeHours: true,
+          courseCode: true,
+          year: true,
+          semesterNumber: true
+        }
+      });
+
+      const hasPartTimeHours = recordsWithPartTimeHours.length > 0;
+
+      return {
+        success: true,
+        hasPartTimeHours,
+        message: hasPartTimeHours 
+          ? `Tìm thấy ${recordsWithPartTimeHours.length} bản ghi có part-time hours` 
+          : 'Chưa có dữ liệu part-time hours'
+      };
+
+    } catch (error) {
+      console.error('Error checking part-time hours existence:', error);
+      return {
+        success: false,
+        hasPartTimeHours: false,
+        message: 'Lỗi khi kiểm tra dữ liệu part-time hours: ' + error.message
+      };
+    }
+  }
 }

@@ -19,9 +19,11 @@ import { PartTimeHourSaveModule } from './PartTimeHourSave/part-time-hour-save.m
 import { CalculatorCreditModule } from './CalculatorCredit/calculator-credit.module';
 import { CalculatorGpaModule } from './CalculatorGpa/calculator-gpa.module';
 import { PredictionReverseModule } from './PredictionReverse/prediction-reverse.module';
+import { PredictionInputScoreModule } from './PredictionInputScore/prediction-input-score.module';
+import { PredictionScoreModule } from './prediction-score/prediction-score.module';
 
 @Module({
-  imports: [UserModule, SurveyModule, ScoreRecordModule, PartTimeHourSaveModule, CalculatorCreditModule, CalculatorGpaModule, PredictionReverseModule],
+  imports: [UserModule, SurveyModule, ScoreRecordModule, PartTimeHourSaveModule, CalculatorCreditModule, CalculatorGpaModule, PredictionReverseModule, PredictionInputScoreModule, PredictionScoreModule],
   controllers: [AppController],
   providers: [AppService, PrismaService], 
 })

@@ -36,6 +36,22 @@ export class PredictionReverseController {
     return this.predictionReverseService.getAllPredictionReverse(userIdNum);
   }
 
+  @Get('latest')
+  async getLatestPredictionReverse(
+    @Headers('user-id') userId: string,
+  ): Promise<PredictionReverseResponseDto | null> {
+    const userIdNum = parseInt(userId) || 1; // Default to user 1 if not provided
+    return this.predictionReverseService.getLatestPredictionReverse(userIdNum);
+  }
+
+  @Get('completed')
+  async getAllCompletedPredictionReverse(
+    @Headers('user-id') userId: string,
+  ): Promise<PredictionReverseResponseDto[]> {
+    const userIdNum = parseInt(userId) || 1; // Default to user 1 if not provided
+    return this.predictionReverseService.getAllCompletedPredictionReverse(userIdNum);
+  }
+
   @Get(':id')
   async getPredictionReverseById(
     @Headers('user-id') userId: string,

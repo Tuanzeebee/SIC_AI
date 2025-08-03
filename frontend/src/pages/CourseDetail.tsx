@@ -4,24 +4,14 @@ import "./coursedetail.css";
 export const CourseDetail: React.FC = () => {
   return (
     <div className="course-detail">
+      <button 
+        className="back-btn"
+        onClick={() => window.location.href = '/tutorial'}
+        title="Quay lại trang tutorial"
+      >
+        ← Quay lại
+      </button>
       <div className="div">
-
-        {/* 1. Thanh điều hướng */}
-        <div className="overlap-11">
-          <div className="overlap-12">
-            <div className="text-wrapper-25">BẢNG ĐIỂM</div>
-          </div>
-          <div className="overlap-13">
-            <div className="text-wrapper-25">NHẬP ĐIỂM</div>
-          </div>
-          <div className="overlap-14">
-            <div className="text-wrapper-25">PHÂN TÍCH</div>
-          </div>
-          <div className="overlap-15">
-            <div className="text-wrapper-26">LỘ TRÌNH</div>
-          </div>
-        </div>
-
         {/* 2. Thông tin khóa học */}
         <div className="overlap">
           <p className="text-wrapper">Cơ cấu phân bố điểm</p>
@@ -101,7 +91,6 @@ export const CourseDetail: React.FC = () => {
           <p className="text-wrapper-28">Part II Data Storage and Big Data Analytics</p>
           <div className="text-wrapper-29">4 hours</div>
           <div className="rectangle-8" />
-          <div className="rectangle-9" />
           <div className="rectangle-10" />
           <div className="text-wrapper-27">2</div>
           <div className="text-wrapper-28">Introduction to DBMS</div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { scoreRecordApi, partTimeHourSaveApi, calculatorGpaApi, calculatorCreditApi } from "../services/api";
+import { scoreRecordApi, partTimeHourSaveApi, calculatorGpaApi, calculatorCreditApi, predictionReverseApi, predictionInputScoreApi } from "../services/api";
 import type { ScoreRecord } from "../services/api";
 import { useLayoutToast } from "../contexts/ToastContext";
 import "./TutorialPrediction.css";
@@ -38,6 +38,10 @@ export const Tutorial = (): React.JSX.Element => {
     gpa: number;
     academicRank: string;
   } | null>(null);
+
+  // New state to check if user has partTimeHours data for navigation button
+  const [hasPartTimeHoursData, setHasPartTimeHoursData] = useState<boolean>(false);
+  const [isCheckingPartTimeHours, setIsCheckingPartTimeHours] = useState<boolean>(false);
 
   // Get user from localStorage
   const getUserId = (): number | null => {
@@ -168,10 +172,30 @@ export const Tutorial = (): React.JSX.Element => {
     }));
   };
 
+  // Function to check if user has partTimeHours data in PredictionInputReverse
+  const checkPartTimeHoursData = async () => {
+    const userId = getUserId();
+    if (!userId) return;
+
+    setIsCheckingPartTimeHours(true);
+    try {
+      const result = await partTimeHourSaveApi.checkPartTimeHoursExists(userId);
+      if (result.success) {
+        setHasPartTimeHoursData(result.hasPartTimeHours);
+      }
+    } catch (error) {
+      console.error('Error checking partTimeHours data:', error);
+      setHasPartTimeHoursData(false);
+    } finally {
+      setIsCheckingPartTimeHours(false);
+    }
+  };
+
   // Auto-fetch semesters when component mounts
   useEffect(() => {
     fetchAvailableSemesters();
     fetchAcademicStatistics();
+    checkPartTimeHoursData(); // Check partTimeHours data when component mounts
   }, []); // Empty dependency array means this runs once when component mounts
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -313,6 +337,52 @@ export const Tutorial = (): React.JSX.Element => {
       }
     } finally {
       setIsFetchingData(false);
+      // Recheck partTimeHours data after updating
+      await checkPartTimeHoursData();
+    }
+  };
+
+  // Handle navigation to next page
+  const handleNavigateToNextPage = async () => {
+    setIsCheckingPartTimeHours(true);
+    
+    try {
+      // Check how many completed reverse predictions exist
+      const allCompletedResult = await predictionReverseApi.getAllCompleted();
+      
+      if (allCompletedResult.success && allCompletedResult.data && allCompletedResult.data.length > 0) {
+        // Create forward predictions from ALL reverse predictions (with selective overwrite)
+        const result = await predictionInputScoreApi.createFromAllReverse();
+        
+        let successMessage = `Đã xử lý thành công: `;
+        const details = [];
+        
+        if (result.created > 0) {
+          details.push(`${result.created} môn học mới`);
+        }
+        if (result.overwritten > 0) {
+          details.push(`${result.overwritten} môn học được cập nhật`);
+        }
+        if (result.skipped > 0) {
+          details.push(`${result.skipped} môn học bỏ qua (thiếu dữ liệu)`);
+        }
+        
+        successMessage += details.join(', ');
+        
+        showSuccess(successMessage);
+        
+        // Navigate to next page after successful data transfer
+        setTimeout(() => {
+          window.location.href = '/survey-history';
+        }, 3000); // Increase delay to 3 seconds for longer message
+      } else {
+        showError('Không tìm thấy dữ liệu dự đoán ngược hoàn chỉnh để chuyển đổi');
+      }
+    } catch (error) {
+      console.error('Error transferring prediction data:', error);
+      showError('Có lỗi xảy ra khi chuyển đổi dữ liệu: ' + (error as Error).message);
+    } finally {
+      setIsCheckingPartTimeHours(false);
     }
   };
 
@@ -810,8 +880,8 @@ export const Tutorial = (): React.JSX.Element => {
             )}
           </div>
 
-          {/* Confirm Button */}
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          {/* Confirm Button and Navigation Button */}
+          <div style={{ marginTop: '20px', textAlign: 'center', display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
               onClick={handleFetchData}
               disabled={isFetchingData}
@@ -829,6 +899,27 @@ export const Tutorial = (): React.JSX.Element => {
             >
               {isFetchingData ? 'Đang tải dữ liệu...' : 'Xác nhận'}
             </button>
+
+            {/* Navigation Button - Only show if user has partTimeHours data */}
+            {hasPartTimeHoursData && (
+              <button
+                onClick={handleNavigateToNextPage}
+                disabled={isFetchingData || isCheckingPartTimeHours}
+                style={{
+                  padding: '12px 30px',
+                  fontSize: '14px',
+                  backgroundColor: (isFetchingData || isCheckingPartTimeHours) ? '#6b7280' : '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: (isFetchingData || isCheckingPartTimeHours) ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {isCheckingPartTimeHours ? 'Đang kiểm tra...' : 'Tiếp tục →'}
+              </button>
+            )}
           </div>
 
           {/* Prediction Results Display */}
