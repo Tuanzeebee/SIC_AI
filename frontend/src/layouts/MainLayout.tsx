@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Logo from "../assets/LogoPredica.png";
 import { Outlet } from "react-router-dom";
+import { useToast } from "../hooks/useToast";
+import { ToastContainer } from "../components/ToastContainer";
+import { ToastProvider } from "../contexts/ToastContext";
 import './MainLayout.css';
 
 const MainLayout: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  // Toast hook for layout-wide toasts
+  const { toasts, showSuccess, showError, showInfo, showWarning, removeToast } = useToast();
+
+  const toastMethods = {
+    showSuccess,
+    showError,
+    showInfo,
+    showWarning
+  };
 
   useEffect(() => {
     // Check if user is logged in
@@ -44,7 +57,8 @@ const MainLayout: React.FC = () => {
     setShowUserMenu(!showUserMenu);
   };
   return (
-    <div className="login-container">
+    <ToastProvider toastMethods={toastMethods}>
+      <div className="login-container">
       {/* Navbar */}
       <header className="header">
         <div className="nav-left">
@@ -133,7 +147,11 @@ const MainLayout: React.FC = () => {
           </div>
         </div>
       </footer>
-    </div>
+
+      {/* Toast Container for MainLayout pages */}
+      <ToastContainer toasts={toasts} removeToast={removeToast} hasLayout={true} />
+      </div>
+    </ToastProvider>
   );
 };
 

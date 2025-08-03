@@ -48,13 +48,13 @@ export class ScoreRecordService {
         const parsedCredits = parseInt(creditsValue);
         const validCredits = isNaN(parsedCredits) ? 3 : parsedCredits;
         
-        const rawScoreValue = row.rawScore || row['Raw Score'] || row['raw_score'] || row['Điểm số'] || '0';
-        const parsedRawScore = parseFloat(rawScoreValue);
-        const validRawScore = isNaN(parsedRawScore) ? 0 : parsedRawScore;
+        const rawScoreValue = row.rawScore || row['Raw Score'] || row['raw_score'] || row['Điểm số'];
+        const parsedRawScore = rawScoreValue ? parseFloat(rawScoreValue) : null;
+        const validRawScore = (parsedRawScore !== null && !isNaN(parsedRawScore)) ? parsedRawScore : null;
         
-        const convertedNumericValue = row.convertedNumericScore || row['converted_numeric_score'] || '0';
-        const parsedConvertedNumeric = parseFloat(convertedNumericValue);
-        const validConvertedNumeric = isNaN(parsedConvertedNumeric) ? null : parsedConvertedNumeric;
+        const convertedNumericValue = row.convertedNumericScore || row['converted_numeric_score'];
+        const parsedConvertedNumeric = convertedNumericValue ? parseFloat(convertedNumericValue) : null;
+        const validConvertedNumeric = (parsedConvertedNumeric !== null && !isNaN(parsedConvertedNumeric)) ? parsedConvertedNumeric : null;
         
         // Extract and validate studentId with multiple possible column names
         const studentIdValue = row.studentId || 
@@ -87,9 +87,9 @@ export class ScoreRecordService {
 
       // Transform data for PredictionInputReverse
       const predictionInputsReverse = csvData.map((row) => {
-        const rawScoreValue = row.rawScore || row['Raw Score'] || row['raw_score'] || row['Điểm số'] || '0';
-        const parsedRawScore = parseFloat(rawScoreValue);
-        const validRawScore = isNaN(parsedRawScore) ? 0 : parsedRawScore;
+        const rawScoreValue = row.rawScore || row['Raw Score'] || row['raw_score'] || row['Điểm số'];
+        const parsedRawScore = rawScoreValue ? parseFloat(rawScoreValue) : null;
+        const validRawScore = (parsedRawScore !== null && !isNaN(parsedRawScore)) ? parsedRawScore : null;
         
         const partTimeValue = row.partTimeHours || row['part_time_hours'];
         const parsedPartTime = partTimeValue ? parseFloat(partTimeValue) : null;
@@ -130,10 +130,10 @@ export class ScoreRecordService {
           emotionalSupport: validEmotional,
           // Calculate interaction features - only if values exist
           financialSupportXPartTime: (validPartTime !== null && validFinancial !== null) ? validPartTime * validFinancial : null,
-          rawScoreXPartTime: validPartTime !== null ? validRawScore * validPartTime : null,
-          rawScoreXFinancial: validFinancial !== null ? validRawScore * validFinancial : null,
-          rawScoreXEmotional: validEmotional !== null ? validRawScore * validEmotional : null,
-          rawScoreXPartTimeFinancial: (validPartTime !== null && validFinancial !== null) ? validRawScore * validPartTime * validFinancial : null,
+          rawScoreXPartTime: (validRawScore !== null && validPartTime !== null) ? validRawScore * validPartTime : null,
+          rawScoreXFinancial: (validRawScore !== null && validFinancial !== null) ? validRawScore * validFinancial : null,
+          rawScoreXEmotional: (validRawScore !== null && validEmotional !== null) ? validRawScore * validEmotional : null,
+          rawScoreXPartTimeFinancial: (validRawScore !== null && validPartTime !== null && validFinancial !== null) ? validRawScore * validPartTime * validFinancial : null,
           predictedWeeklyStudyHours: validPredictedWeekly,
           predictedAttendancePercentage: validPredictedAttendance,
           mode: 'reverse',

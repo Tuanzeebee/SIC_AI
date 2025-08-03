@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { IsNumber, IsString, IsOptional, IsNotEmpty, IsIn } from 'class-validator';
 import { PartTimeHourSaveService, PartTimeHourSaveInputData } from './part-time-hour-save.service';
+import { AutoPredictionTriggerService } from './auto-prediction-trigger.service';
 
 export class CreatePartTimeHourSaveDto {
   @IsNumber()
@@ -83,7 +84,10 @@ export class UpdatePartTimeHoursDto {
 
 @Controller('api/part-time-hour-saves')
 export class PartTimeHourSaveController {
-  constructor(private readonly partTimeHourSaveService: PartTimeHourSaveService) {}
+  constructor(
+    private readonly partTimeHourSaveService: PartTimeHourSaveService,
+    private readonly autoPredictionTriggerService: AutoPredictionTriggerService
+  ) {}
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
@@ -180,6 +184,92 @@ export class PartTimeHourSaveController {
       return {
         success: false,
         message: error.message || 'Lỗi khi cập nhật part-time hours',
+      };
+    }
+  }
+
+  @Put('update-part-time-hours-with-prediction')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe())
+  async updatePartTimeHoursWithPrediction(@Body() updatePartTimeHoursDto: UpdatePartTimeHoursDto) {
+    try {
+      const result = await this.partTimeHourSaveService.updatePartTimeHoursWithAutoPrediction(updatePartTimeHoursDto);
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Lỗi khi cập nhật part-time hours và tự động dự đoán',
+      };
+    }
+  }
+
+  @Post('trigger-auto-prediction/:userId')
+  @HttpCode(HttpStatus.OK)
+  async triggerAutoPredictionForUser(@Param('userId', ParseIntPipe) userId: number) {
+    try {
+      const result = await this.autoPredictionTriggerService.triggerForAllCompleteRecords(userId);
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Lỗi khi trigger tự động dự đoán',
+      };
+    }
+  }
+
+  @Post('trigger-auto-prediction/:userId/:recordId')
+  @HttpCode(HttpStatus.OK)
+  async triggerAutoPredictionForRecord(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('recordId', ParseIntPipe) recordId: number
+  ) {
+    try {
+      const result = await this.autoPredictionTriggerService.triggerOnRawScoreUpdate(userId, recordId);
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Lỗi khi trigger tự động dự đoán cho record',
+      };
+    }
+  }
+
+  @Post('update-part-time-hours-with-smart-prediction')
+  @HttpCode(HttpStatus.OK)
+  async updatePartTimeHoursWithSmartPrediction(@Body() body: {
+    userId: number;
+    partTimeHours: number;
+    viewMode: 'semester' | 'full';
+    semesterPartTimeHours?: {[key: string]: number};
+  }) {
+    try {
+      // First update part-time hours in all relevant records
+      const updateResult = await this.partTimeHourSaveService.updatePartTimeHoursWithAutoPrediction({
+        userId: body.userId,
+        partTimeHours: body.partTimeHours,
+        viewMode: body.viewMode,
+        semesterPartTimeHours: body.semesterPartTimeHours,
+      });
+
+      if (!updateResult.success) {
+        return updateResult;
+      }
+
+      // Then trigger auto prediction ONLY for records that have rawScore > 0
+      const predictionResult = await this.autoPredictionTriggerService.triggerForAllCompleteRecords(body.userId);
+
+      return {
+        success: true,
+        message: 'Đã cập nhật part-time hours và tự động dự đoán cho các môn có điểm số',
+        data: {
+          updateResult,
+          predictionResult,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Lỗi khi cập nhật part-time hours và tự động dự đoán',
       };
     }
   }

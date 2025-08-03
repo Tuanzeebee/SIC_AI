@@ -6,13 +6,15 @@ interface ToastProps {
   type?: 'success' | 'error' | 'info' | 'warning';
   duration?: number;
   onClose: () => void;
+  hasLayout?: boolean; // New prop to indicate if toast is inside MainLayout
 }
 
 export const Toast: React.FC<ToastProps> = ({ 
   message, 
   type = 'success', 
   duration = 3000, 
-  onClose 
+  onClose,
+  hasLayout = false
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -45,7 +47,7 @@ export const Toast: React.FC<ToastProps> = ({
   };
 
   return (
-    <div className={`toast toast-${type} ${isVisible ? 'toast-visible' : 'toast-hidden'}`}>
+    <div className={`toast toast-${type} ${hasLayout ? 'toast-with-layout' : ''} ${isVisible ? 'toast-visible' : 'toast-hidden'}`}>
       <div className="toast-content">
         <span className="toast-icon">{getIcon()}</span>
         <span className="toast-message">{message}</span>

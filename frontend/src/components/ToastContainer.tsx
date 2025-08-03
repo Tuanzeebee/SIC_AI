@@ -11,9 +11,10 @@ interface ToastData {
 interface ToastContainerProps {
   toasts: ToastData[];
   removeToast: (id: string) => void;
+  hasLayout?: boolean; // New prop to indicate if toasts are inside MainLayout
 }
 
-export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, removeToast }) => {
+export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, removeToast, hasLayout = false }) => {
   return (
     <>
       {toasts.map((toast) => (
@@ -23,6 +24,7 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, removeTo
           type={toast.type}
           duration={toast.duration}
           onClose={() => removeToast(toast.id)}
+          hasLayout={hasLayout}
         />
       ))}
     </>

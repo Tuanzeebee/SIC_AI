@@ -7,9 +7,14 @@
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 10000;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   transition: all 0.3s ease-in-out;
+}
+
+/* Toast positioning for pages with MainLayout (with header) */
+.toast.toast-with-layout {
+  top: 80px; /* Position below the header (header height is 60px + some margin) */
 }
 
 .toast-content {

@@ -1,5 +1,17 @@
 import axios from 'axios';
 
+// Import Calculator Credit API
+export { calculatorCreditApi } from './calculatorCreditApi';
+
+// Import Calculator GPA API
+export { calculatorGpaApi } from './calculatorGpaApi';
+export type { 
+  GpaResult, 
+  GpaCalculationDetail, 
+  DetailedGpaResult, 
+  QuickGpaStats 
+} from './calculatorGpaApi';
+
 const API_BASE_URL = 'http://localhost:3000';
 
 const api = axios.create({
@@ -281,6 +293,17 @@ export const partTimeHourSaveApi = {
 
   updatePartTimeHours: async (data: UpdatePartTimeHoursData): Promise<{ success: boolean; message: string; data?: any }> => {
     const response = await api.put('/api/part-time-hour-saves/update-part-time-hours', data);
+    return response.data;
+  },
+
+  updatePartTimeHoursWithPrediction: async (data: UpdatePartTimeHoursData): Promise<{ success: boolean; message: string; data?: any }> => {
+    const response = await api.put('/api/part-time-hour-saves/update-part-time-hours-with-prediction', data);
+    return response.data;
+  },
+
+  // New endpoint for auto prediction with part-time hours update
+  updatePartTimeHoursWithAutoPrediction: async (data: UpdatePartTimeHoursData): Promise<{ success: boolean; message: string; data?: any }> => {
+    const response = await api.post('/api/part-time-hour-saves/update-part-time-hours-with-smart-prediction', data);
     return response.data;
   },
 };

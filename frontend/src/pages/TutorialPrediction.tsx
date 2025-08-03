@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { scoreRecordApi, partTimeHourSaveApi } from "../services/api";
+import { scoreRecordApi, partTimeHourSaveApi, calculatorGpaApi, calculatorCreditApi } from "../services/api";
 import type { ScoreRecord } from "../services/api";
+import { useLayoutToast } from "../contexts/ToastContext";
 import "./TutorialPrediction.css";
 
 // Import placeholder images - you may need to replace these with actual image paths
-const frame = "https://via.placeholder.com/36x36?text=📊";
-const vector = "https://via.placeholder.com/21x26?text=✅";
-const image = "https://via.placeholder.com/19x18?text=⭐";
-
+import vector1 from "../assets/tinchi.svg";
+import vector2 from "../assets/tiendo.svg";
+import vector3 from "../assets/ngoisao.svg";
 export const Tutorial = (): React.JSX.Element => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>('tutorial');
   const [viewMode, setViewMode] = useState<string>('semester'); // 'semester' for Theo Kỳ, 'full' for Full
   const [partTimeHours, setPartTimeHours] = useState<number>(0);
+  
+  // Toast hook - using layout toast since we're inside MainLayout
+  const { showSuccess, showError } = useLayoutToast();
   
   // New state for semester-specific part-time hours
   const [semesterPartTimeHours, setSemesterPartTimeHours] = useState<{[key: string]: number}>({});
@@ -22,10 +24,20 @@ export const Tutorial = (): React.JSX.Element => {
   // State for data fetching
   const [isFetchingData, setIsFetchingData] = useState(false);
   const [scoreRecords, setScoreRecords] = useState<ScoreRecord[]>([]);
-  const [dataMessage, setDataMessage] = useState<string>('');
   
   // New state for available semesters from API
   const [availableSemesters, setAvailableSemesters] = useState<Array<{year: string, semesterNumber: number, label: string}>>([]);
+
+  // New state for prediction results
+  const [predictionResults, setPredictionResults] = useState<any[]>([]);
+
+  // New state for academic statistics from API
+  const [academicStats, setAcademicStats] = useState<{
+    earnedCredits: number;
+    progressPercentage: number;
+    gpa: number;
+    academicRank: string;
+  } | null>(null);
 
   // Get user from localStorage
   const getUserId = (): number | null => {
@@ -53,6 +65,55 @@ export const Tutorial = (): React.JSX.Element => {
       }
     } catch (error) {
       console.error('Error fetching semesters:', error);
+    }
+  };
+
+  // Fetch academic statistics from API
+  const fetchAcademicStatistics = async () => {
+    const userId = getUserId();
+    if (!userId) return;
+
+    try {
+      // Fetch GPA data separately (thang điểm 4.0)
+      const gpaResult = await calculatorGpaApi.getQuickStats(userId);
+      
+      // Fetch credit data separately (thang điểm 10.0)
+      const creditResult = await calculatorCreditApi.getQuickStatistics(userId);
+
+      if (gpaResult.success && creditResult.success) {
+        // Use Credit API for most data (as it has more comprehensive calculation)
+        // and GPA API specifically for 4.0 scale GPA
+        setAcademicStats({
+          earnedCredits: creditResult.data.earnedCredits,
+          progressPercentage: creditResult.data.progressPercentage,
+          gpa: gpaResult.data.cumulativeGpa, // Use 4.0 scale from GPA API
+          academicRank: gpaResult.data.cumulativeGpa >= 3.6 ? 'Xuất sắc' :
+                       gpaResult.data.cumulativeGpa >= 3.2 ? 'Giỏi' :
+                       gpaResult.data.cumulativeGpa >= 2.5 ? 'Khá' :
+                       gpaResult.data.cumulativeGpa >= 2.0 ? 'Trung bình' : 'Yếu'
+        });
+      } else if (gpaResult.success) {
+        // Only GPA data available
+        setAcademicStats({
+          earnedCredits: gpaResult.data.totalCredits, // Fallback to GPA API's totalCredits
+          progressPercentage: 0, // No progress data available
+          gpa: gpaResult.data.cumulativeGpa,
+          academicRank: gpaResult.data.cumulativeGpa >= 3.6 ? 'Xuất sắc' :
+                       gpaResult.data.cumulativeGpa >= 3.2 ? 'Giỏi' :
+                       gpaResult.data.cumulativeGpa >= 2.5 ? 'Khá' :
+                       gpaResult.data.cumulativeGpa >= 2.0 ? 'Trung bình' : 'Yếu'
+        });
+      } else if (creditResult.success) {
+        // Only credit data available - use Credit API's GPA (thang 10.0) and convert rank
+        setAcademicStats({
+          earnedCredits: creditResult.data.earnedCredits,
+          progressPercentage: creditResult.data.progressPercentage,
+          gpa: creditResult.data.gpa, // This is on 10.0 scale
+          academicRank: creditResult.data.academicRank // Use Credit API's ranking
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching academic statistics:', error);
     }
   };
 
@@ -110,6 +171,7 @@ export const Tutorial = (): React.JSX.Element => {
   // Auto-fetch semesters when component mounts
   useEffect(() => {
     fetchAvailableSemesters();
+    fetchAcademicStatistics();
   }, []); // Empty dependency array means this runs once when component mounts
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,9 +179,8 @@ export const Tutorial = (): React.JSX.Element => {
       const selectedFile = e.target.files[0];
       if (selectedFile.type === 'text/csv' || selectedFile.name.endsWith('.csv')) {
         setFile(selectedFile);
-        setMessage("");
       } else {
-        setMessage('Chỉ hỗ trợ file CSV ');
+        showError('Chỉ hỗ trợ file CSV');
       }
     }
   };
@@ -131,36 +192,37 @@ export const Tutorial = (): React.JSX.Element => {
 
   const handleUpload = async () => {
     if (!file) {
-      setMessage('Vui lòng chọn file CSV');
+      showError('Vui lòng chọn file CSV');
       return;
     }
 
     const userId = getUserId();
     if (!userId) {
-      setMessage('Vui lòng đăng nhập để tải lên file');
+      showError('Vui lòng đăng nhập để tải lên file');
       return;
     }
 
     setIsLoading(true);
-    setMessage("");
     
     try {
       const result = await scoreRecordApi.uploadCsv(userId, file);
       
       if (result.success) {
-        setMessage('Upload file thành công!');
+        showSuccess('Upload file thành công!');
         setFile(null);
         // Reset file input
         const fileInput = document.getElementById('csv-file-input') as HTMLInputElement;
         if (fileInput) {
           fileInput.value = '';
         }
+        // Refresh academic statistics after upload
+        await fetchAcademicStatistics();
       } else {
-        setMessage(result.message || 'Lỗi khi tải lên file');
+        showError(result.message || 'Lỗi khi tải lên file');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      setMessage('Lỗi khi tải lên file. Vui lòng thử lại.');
+      showError('Lỗi khi tải lên file. Vui lòng thử lại.');
     } finally {
       setIsLoading(false);
     }
@@ -169,18 +231,17 @@ export const Tutorial = (): React.JSX.Element => {
   const handleFetchData = async () => {
     const userId = getUserId();
     if (!userId) {
-      setDataMessage('Vui lòng đăng nhập để xem dữ liệu');
+      showError('Vui lòng đăng nhập để xem dữ liệu');
       return;
     }
 
     setIsFetchingData(true);
-    setDataMessage("");
 
     try {
       // Fetch available semesters first
       await fetchAvailableSemesters();
 
-      // Update part-time hours in database first
+      // Update part-time hours in database first with auto prediction
       const updateData = {
         userId,
         partTimeHours,
@@ -188,14 +249,15 @@ export const Tutorial = (): React.JSX.Element => {
         semesterPartTimeHours: viewMode === 'semester' ? semesterPartTimeHours : undefined
       };
 
-      console.log('Sending update data:', updateData); // Debug log
+      console.log('Sending update data with auto prediction:', updateData); // Debug log
 
-      const updateResult = await partTimeHourSaveApi.updatePartTimeHours(updateData);
-      console.log('Update result:', updateResult); // Debug log
+      // Use the new auto prediction endpoint
+      const updateResult = await partTimeHourSaveApi.updatePartTimeHoursWithAutoPrediction(updateData);
+      console.log('Update result with auto prediction:', updateResult); // Debug log
       
       if (!updateResult.success) {
         console.error('Update error:', updateResult.message); // Debug log
-        setDataMessage(`Lỗi khi lưu part-time hours: ${updateResult.message}`);
+        showError(`Lỗi khi lưu part-time hours: ${updateResult.message}`);
         return;
       }
 
@@ -207,41 +269,47 @@ export const Tutorial = (): React.JSX.Element => {
         setScoreRecords(scoreRecordsResult.data);
       }
 
+      // Refresh academic statistics after updating data
+      await fetchAcademicStatistics();
+
       // Filter data based on viewMode if needed
       let filteredScoreRecords = scoreRecordsResult.data || [];
 
       if (viewMode === 'semester') {
-        // Generate semester summary message
-        const uniqueSemesters = getUniqueSemesters();
-        const semesterSummary = uniqueSemesters.map(semester => {
-          const semesterKey = `${semester.year}-HK${semester.semesterNumber}`;
-          const hours = semesterPartTimeHours[semesterKey] || 0;
-          return `${semester.label}: ${hours}h`;
-        }).join(', ');
-        
-        setDataMessage(`Đã tải và lưu dữ liệu theo kỳ: ${filteredScoreRecords.length} bản ghi điểm. Part-time: ${semesterSummary}`);
+        // Show success message for semester mode with prediction info
+        const predictionCount = updateResult.data?.predictionResult?.data?.length || 0;
+        showSuccess(`Đã tải và lưu dữ liệu theo kỳ thành công${predictionCount > 0 ? ` và tự động dự đoán ${predictionCount} môn học` : ''}`);
       } else {
-        // Full mode - show all data
-        setDataMessage(`Đã tải và lưu toàn bộ dữ liệu: ${filteredScoreRecords.length} bản ghi điểm. Thời gian làm part-time: ${partTimeHours} giờ/tuần đã được cập nhật vào database`);
+        // Full mode - show all data with prediction info
+        const predictionCount = updateResult.data?.predictionResult?.data?.length || 0;
+        showSuccess(`Đã tải và lưu toàn bộ dữ liệu thành công${predictionCount > 0 ? ` và tự động dự đoán ${predictionCount} môn học` : ''}`);
       }
 
       console.log('ScoreRecords:', filteredScoreRecords);
       console.log('ViewMode:', viewMode);
       console.log('PartTimeHours:', partTimeHours);
-      console.log('Update Result:', updateResult);
+      console.log('Update Result with Auto Prediction:', updateResult);
+      
+      // Log prediction results if available
+      if (updateResult.data?.predictionResult?.data?.length > 0) {
+        console.log('Auto Prediction Results:', updateResult.data.predictionResult.data);
+        setPredictionResults(updateResult.data.predictionResult.data);
+      } else {
+        setPredictionResults([]);
+      }
 
     } catch (error: any) {
       console.error('Fetch data error:', error);
       // More detailed error logging
       if (error.response) {
         console.error('Error response:', error.response.data);
-        setDataMessage(`Lỗi API: ${error.response.data.message || error.message}`);
+        showError(`Lỗi API: ${error.response.data.message || error.message}`);
       } else if (error.request) {
         console.error('Error request:', error.request);
-        setDataMessage('Lỗi kết nối tới server. Vui lòng kiểm tra backend có đang chạy không.');
+        showError('Lỗi kết nối tới server. Vui lòng kiểm tra backend có đang chạy không.');
       } else {
         console.error('Error message:', error.message);
-        setDataMessage('Lỗi khi tải dữ liệu. Vui lòng thử lại.');
+        showError('Lỗi khi tải dữ liệu. Vui lòng thử lại.');
       }
     } finally {
       setIsFetchingData(false);
@@ -419,6 +487,12 @@ export const Tutorial = (): React.JSX.Element => {
   );
 
   const OverviewScore = (): React.JSX.Element => {
+    // Use API data if available, otherwise show default values
+    const earnedCredits = academicStats?.earnedCredits ?? 0;
+    const progress = academicStats?.progressPercentage ?? 0;
+    const currentGPA = academicStats?.gpa ?? 0;
+    const academicRank = academicStats?.academicRank ?? 'Chưa có dữ liệu';
+
     return (
       <div className="frame">
         <div className="div-4">
@@ -426,27 +500,29 @@ export const Tutorial = (): React.JSX.Element => {
             <div className="overlap-group">
               <div className="rectangle" />
 
-              <div className="div-5">
-                <div className="div-6">
-                  <img className="img" alt="Frame" src={frame} />
-
-                  <div className="div-7">
-                    <div className="div-8">
-                      <div className="text-wrapper-5">📊</div>
-                      <div className="text-wrapper-6">Tổng tín chỉ</div>
+                       <div className="div-5">
+                <div className="div-10">
+                  <div className="frame-wrapper">
+                    <div className="vector-wrapper">
+                      <img className="vector" alt="Vector" src={vector1} />
                     </div>
-                    <div className="text-wrapper-7">120</div>
+                  </div>
+                  <div className="div-7">
+                    <div className="div-9">
+                      <div className="text-wrapper-10">📊</div>
+                      <div className="text-wrapper-11">Tổng tín chỉ</div>
+                    </div>
+                    <div className="text-wrapper-12">144</div>
                   </div>
                 </div>
 
-                <div className="div-wrapper">
-                  <div className="div-9">
-                    <div className="text-wrapper-8">🎯</div>
-                    <div className="text-wrapper-9">Chương trình đào tạo</div>
+                <div className="frame-wrapper-6">
+                  <div className="div-12">
+                    <div className="text-wrapper-13">🎯</div>
+                    <div className="text-wrapper-14">Chương trình đào tạo</div>
                   </div>
                 </div>
               </div>
-
               <div className="rectangle-2" />
             </div>
           </div>
@@ -459,7 +535,7 @@ export const Tutorial = (): React.JSX.Element => {
                 <div className="div-10">
                   <div className="frame-wrapper-2">
                     <div className="vector-wrapper">
-                      <img className="vector" alt="Vector" src={vector} />
+                      <img className="vector" alt="Vector" src={vector2} />
                     </div>
                   </div>
 
@@ -468,14 +544,14 @@ export const Tutorial = (): React.JSX.Element => {
                       <div className="text-wrapper-10">✅</div>
                       <div className="text-wrapper-11">Tín chỉ đã học</div>
                     </div>
-                    <div className="text-wrapper-12">85</div>
+                    <div className="text-wrapper-12">{earnedCredits}</div>
                   </div>
                 </div>
 
                 <div className="frame-wrapper-3">
                   <div className="div-12">
                     <div className="text-wrapper-13">📈</div>
-                    <div className="text-wrapper-14">Tiến độ: 70.8%</div>
+                    <div className="text-wrapper-14">Tiến độ: {progress}%</div>
                   </div>
                 </div>
               </div>
@@ -492,23 +568,23 @@ export const Tutorial = (): React.JSX.Element => {
                 <div className="div-13">
                   <div className="frame-wrapper-4">
                     <div className="vector-wrapper">
-                      <img className="vector-2" alt="Vector" src={image} />
+                      <img className="vector-2" alt="Vector" src={vector3} />
                     </div>
                   </div>
 
                   <div className="div-7">
                     <div className="div-14">
                       <div className="text-wrapper-15">⭐</div>
-                      <div className="text-wrapper-16">GPA hiện tại</div>
+                      <div className="text-wrapper-16">GPA hiện tại (4.0)</div>
                     </div>
-                    <div className="text-wrapper-17">3.01</div>
+                    <div className="text-wrapper-17">{currentGPA.toFixed(2)}</div>
                   </div>
                 </div>
 
                 <div className="frame-wrapper-5">
                   <div className="div-15">
                     <div className="text-wrapper-18">🏆</div>
-                    <div className="text-wrapper-19">Xếp loại: Khá</div>
+                    <div className="text-wrapper-19">Xếp loại: {academicRank}</div>
                   </div>
                 </div>
               </div>
@@ -601,23 +677,6 @@ export const Tutorial = (): React.JSX.Element => {
               </label>
             </div>
           </div>
-
-          {/* Data Message */}
-          {dataMessage && (
-            <div style={{
-              padding: '12px 20px',
-              margin: '0 0 16px 0',
-              borderRadius: '8px',
-              backgroundColor: dataMessage.includes('Lỗi') ? '#fee2e2' : '#d1fae5',
-              color: dataMessage.includes('Lỗi') ? '#dc2626' : '#065f46',
-              border: `1px solid ${dataMessage.includes('Lỗi') ? '#fca5a5' : '#a7f3d0'}`,
-              fontSize: '14px',
-              fontWeight: '500',
-              textAlign: 'center'
-            }}>
-              {dataMessage}
-            </div>
-          )}
 
           {/* Part Time Hours Input */}
           <div style={{ marginTop: '20px' }}>
@@ -771,6 +830,93 @@ export const Tutorial = (): React.JSX.Element => {
               {isFetchingData ? 'Đang tải dữ liệu...' : 'Xác nhận'}
             </button>
           </div>
+
+          {/* Prediction Results Display */}
+          {predictionResults.length > 0 && (
+            <div style={{
+              marginTop: '20px',
+              padding: '20px',
+              backgroundColor: '#f0fdf4',
+              border: '1px solid #22c55e',
+              borderRadius: '12px',
+              width: '100%'
+            }}>
+              <h4 style={{
+                color: '#15803d',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                margin: '0 0 16px 0',
+                textAlign: 'center'
+              }}>
+                🎯 Kết quả dự đoán tự động ({predictionResults.length} môn học)
+              </h4>
+              
+              <div style={{
+                maxHeight: '300px',
+                overflowY: 'auto',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px'
+              }}>
+                {predictionResults.map((result, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '8px',
+                      border: '1px solid #bbf7d0'
+                    }}
+                  >
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '8px'
+                    }}>
+                      <span style={{
+                        color: '#374151',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                      }}>
+                        {result.courseCode}
+                      </span>
+                      <span style={{
+                        color: result.success ? '#15803d' : '#dc2626',
+                        fontSize: '12px',
+                        fontWeight: '500'
+                      }}>
+                        {result.success ? '✅ Thành công' : '❌ Lỗi'}
+                      </span>
+                    </div>
+                    
+                    {result.success && result.predictions ? (
+                      <div style={{
+                        display: 'flex',
+                        gap: '16px',
+                        fontSize: '13px',
+                        color: '#6b7280'
+                      }}>
+                        <span>
+                          📚 Giờ học/tuần: <strong>{result.predictions.predicted_weekly_study_hours?.toFixed(1)}</strong>
+                        </span>
+                        <span>
+                          🎯 Tỷ lệ tham gia: <strong>{result.predictions.predicted_attendance_percentage?.toFixed(1)}%</strong>
+                        </span>
+                      </div>
+                    ) : (
+                      <span style={{
+                        color: '#dc2626',
+                        fontSize: '12px'
+                      }}>
+                        {result.error || 'Không thể dự đoán'}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
 
@@ -816,24 +962,6 @@ export const Tutorial = (): React.JSX.Element => {
         onChange={handleFileChange}
         style={{ display: 'none' }}
       />
-      
-      {/* Message display */}
-      {message && (
-        <div style={{
-          padding: '12px 20px',
-          margin: '0 0 20px 0',
-          borderRadius: '8px',
-          backgroundColor: message.includes('thành công') ? '#d1fae5' : '#fee2e2',
-          color: message.includes('thành công') ? '#065f46' : '#dc2626',
-          border: `1px solid ${message.includes('thành công') ? '#a7f3d0' : '#fca5a5'}`,
-          fontSize: '14px',
-          fontWeight: '500',
-          textAlign: 'center',
-          maxWidth: '400px'
-        }}>
-          {message}
-        </div>
-      )}
       
       <div style={{
         display: 'flex',

@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../PrismaService/prisma.service';
 import { CreatePredictionInputReverseDto, CreatePredictionInputScoreDto } from '../ScoreRecord/dto/create-prediction-input.dto';
+import axios from 'axios';
 
 export interface PartTimeHourSaveInputData {
   userId: number;
@@ -20,6 +21,8 @@ export interface UpdatePartTimeHoursData {
 
 @Injectable()
 export class PartTimeHourSaveService {
+  private readonly ML_SERVICE_URL = 'http://localhost:8000';
+  
   constructor(private readonly prisma: PrismaService) {}
 
   async createPredictionInputs(data: PartTimeHourSaveInputData) {
@@ -331,64 +334,136 @@ export class PartTimeHourSaveService {
           const [year, semesterPart] = semesterKey.split('-HK');
           const semesterNumber = semesterPart === 'Hè' ? 3 : parseInt(semesterPart);
           
-          // Update PredictionInputReverse
-          const reverseUpdate = await this.prisma.predictionInputReverse.updateMany({
+          // Get existing records to recalculate interaction features
+          const reverseRecords = await this.prisma.predictionInputReverse.findMany({
             where: {
               userId,
               year,
               semesterNumber
-            },
-            data: {
-              partTimeHours: hours
             }
           });
 
-          // Update PredictionInputScore
-          const scoreUpdate = await this.prisma.predictionInputScore.updateMany({
+          const scoreRecords = await this.prisma.predictionInputScore.findMany({
             where: {
               userId,
               year,
               semesterNumber
-            },
-            data: {
-              partTimeHours: hours
             }
           });
+
+          // Update each PredictionInputReverse record individually to recalculate interaction features
+          let reverseUpdateCount = 0;
+          for (const record of reverseRecords) {
+            const updateData: any = {
+              partTimeHours: hours,
+              // Recalculate interaction features
+              financialSupportXPartTime: (hours !== null && record.financialSupport !== null) 
+                ? hours * record.financialSupport : null,
+              rawScoreXPartTime: (record.rawScore !== null && hours !== null) 
+                ? record.rawScore * hours : null,
+              rawScoreXPartTimeFinancial: (record.rawScore !== null && hours !== null && record.financialSupport !== null) 
+                ? record.rawScore * hours * record.financialSupport : null,
+            };
+
+            await this.prisma.predictionInputReverse.update({
+              where: { id: record.id },
+              data: updateData
+            });
+            reverseUpdateCount++;
+          }
+
+          // Update each PredictionInputScore record individually to recalculate interaction features
+          let scoreUpdateCount = 0;
+          for (const record of scoreRecords) {
+            const updateData: any = {
+              partTimeHours: hours,
+              // Recalculate interaction features
+              financialSupportXPartTime: (record.financialSupport !== null && hours !== null) 
+                ? record.financialSupport * hours : null,
+              studyHoursXPartTime: (record.weeklyStudyHours !== null && hours !== null) 
+                ? record.weeklyStudyHours * hours : null,
+            };
+
+            await this.prisma.predictionInputScore.update({
+              where: { id: record.id },
+              data: updateData
+            });
+            scoreUpdateCount++;
+          }
 
           updates.push({
             semester: semesterKey,
             hours,
-            reverseUpdated: reverseUpdate.count,
-            scoreUpdated: scoreUpdate.count
+            reverseUpdated: reverseUpdateCount,
+            scoreUpdated: scoreUpdateCount
           });
         }
 
         return {
           success: true,
-          message: `Đã cập nhật part-time hours cho ${updates.length} học kỳ`,
+          message: `Đã cập nhật part-time hours và tính toán lại interaction features cho ${updates.length} học kỳ`,
           data: { viewMode, updates }
         };
 
       } else {
         // Update part-time hours for all records
-        const reverseUpdate = await this.prisma.predictionInputReverse.updateMany({
-          where: { userId },
-          data: { partTimeHours }
+        // Get all existing records to recalculate interaction features
+        const reverseRecords = await this.prisma.predictionInputReverse.findMany({
+          where: { userId }
         });
 
-        const scoreUpdate = await this.prisma.predictionInputScore.updateMany({
-          where: { userId },
-          data: { partTimeHours }
+        const scoreRecords = await this.prisma.predictionInputScore.findMany({
+          where: { userId }
         });
+
+        // Update each PredictionInputReverse record individually to recalculate interaction features
+        let reverseUpdateCount = 0;
+        for (const record of reverseRecords) {
+          const updateData: any = {
+            partTimeHours: partTimeHours,
+            // Recalculate interaction features
+            financialSupportXPartTime: (partTimeHours !== null && record.financialSupport !== null) 
+              ? partTimeHours * record.financialSupport : null,
+            rawScoreXPartTime: (record.rawScore !== null && partTimeHours !== null) 
+              ? record.rawScore * partTimeHours : null,
+            rawScoreXPartTimeFinancial: (record.rawScore !== null && partTimeHours !== null && record.financialSupport !== null) 
+              ? record.rawScore * partTimeHours * record.financialSupport : null,
+          };
+
+          await this.prisma.predictionInputReverse.update({
+            where: { id: record.id },
+            data: updateData
+          });
+          reverseUpdateCount++;
+        }
+
+        // Update each PredictionInputScore record individually to recalculate interaction features
+        let scoreUpdateCount = 0;
+        for (const record of scoreRecords) {
+          const updateData: any = {
+            partTimeHours: partTimeHours,
+            // Recalculate interaction features
+            financialSupportXPartTime: (record.financialSupport !== null && partTimeHours !== null) 
+              ? record.financialSupport * partTimeHours : null,
+            studyHoursXPartTime: (record.weeklyStudyHours !== null && partTimeHours !== null) 
+              ? record.weeklyStudyHours * partTimeHours : null,
+          };
+
+          await this.prisma.predictionInputScore.update({
+            where: { id: record.id },
+            data: updateData
+          });
+          scoreUpdateCount++;
+        }
 
         return {
           success: true,
-          message: `Đã cập nhật part-time hours (${partTimeHours}h) cho toàn bộ dữ liệu`,
+          message: `Đã cập nhật part-time hours (${partTimeHours}h) và tính toán lại interaction features cho toàn bộ dữ liệu`,
           data: {
             viewMode,
             partTimeHours,
-            reverseRecordsUpdated: reverseUpdate.count,
-            scoreRecordsUpdated: scoreUpdate.count
+            reverseRecordsUpdated: reverseUpdateCount,
+            scoreRecordsUpdated: scoreUpdateCount
           }
         };
       }
@@ -396,6 +471,272 @@ export class PartTimeHourSaveService {
     } catch (error) {
       console.error('Error updating part-time hours:', error);
       throw new Error('Lỗi khi cập nhật part-time hours: ' + error.message);
+    }
+  }
+
+  // Add ML service call method
+  private async callMLReverseService(data: {
+    semester_number: number;
+    course_code: string;
+    study_format: string;
+    credits_unit: number;
+    raw_score: number;
+    part_time_hours: number;
+    financial_support: number;
+    emotional_support: number;
+  }): Promise<{
+    mode: string;
+    predicted_weekly_study_hours: number;
+    predicted_attendance_percentage: number;
+  }> {
+    try {
+      const response = await axios.post(`${this.ML_SERVICE_URL}/reverse`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 30000, // 30 second timeout
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('ML Service Error:', error.response?.data || error.message);
+      throw new HttpException(
+        `ML Service Error: ${error.response?.data?.detail || error.message}`,
+        HttpStatus.BAD_GATEWAY,
+      );
+    }
+  }
+
+  // Add method to automatically predict when part-time hours are updated and sufficient data exists
+  async updatePartTimeHoursWithAutoPrediction(data: UpdatePartTimeHoursData) {
+    try {
+      const { userId, partTimeHours, viewMode, semesterPartTimeHours } = data;
+
+      if (viewMode === 'semester' && semesterPartTimeHours) {
+        // Update part-time hours for specific semesters
+        const updates: Array<{
+          semester: string;
+          hours: number;
+          reverseUpdated: number;
+          scoreUpdated: number;
+          mlPredictionResults?: any[];
+        }> = [];
+        
+        for (const [semesterKey, hours] of Object.entries(semesterPartTimeHours)) {
+          const [year, semesterPart] = semesterKey.split('-HK');
+          const semesterNumber = semesterPart === 'Hè' ? 3 : parseInt(semesterPart);
+          
+          // Get existing records to recalculate interaction features
+          const reverseRecords = await this.prisma.predictionInputReverse.findMany({
+            where: {
+              userId,
+              year,
+              semesterNumber
+            }
+          });
+
+          const scoreRecords = await this.prisma.predictionInputScore.findMany({
+            where: {
+              userId,
+              year,
+              semesterNumber
+            }
+          });
+
+          // Update each PredictionInputReverse record individually to recalculate interaction features
+          let reverseUpdateCount = 0;
+          const mlPredictionResults: any[] = [];
+          
+          for (const record of reverseRecords) {
+            const updateData: any = {
+              partTimeHours: hours,
+              // Recalculate interaction features
+              financialSupportXPartTime: (hours !== null && record.financialSupport !== null) 
+                ? hours * record.financialSupport : null,
+              rawScoreXPartTime: (record.rawScore !== null && hours !== null) 
+                ? record.rawScore * hours : null,
+              rawScoreXPartTimeFinancial: (record.rawScore !== null && hours !== null && record.financialSupport !== null) 
+                ? record.rawScore * hours * record.financialSupport : null,
+            };
+
+            // Check if we have enough data for ML prediction
+            if (record.rawScore && record.rawScore > 0 && 
+                record.financialSupport !== null && 
+                record.emotionalSupport !== null) {
+              
+              try {
+                // Call ML service for reverse prediction
+                const mlResult = await this.callMLReverseService({
+                  semester_number: record.semesterNumber,
+                  course_code: record.courseCode,
+                  study_format: record.studyFormat,
+                  credits_unit: record.creditsUnit,
+                  raw_score: record.rawScore,
+                  part_time_hours: hours,
+                  financial_support: record.financialSupport,
+                  emotional_support: record.emotionalSupport,
+                });
+
+                // Add ML predictions to update data
+                updateData.predictedWeeklyStudyHours = mlResult.predicted_weekly_study_hours;
+                updateData.predictedAttendancePercentage = mlResult.predicted_attendance_percentage;
+                
+                mlPredictionResults.push({
+                  recordId: record.id,
+                  courseCode: record.courseCode,
+                  predictions: mlResult
+                });
+
+              } catch (mlError) {
+                console.error('ML Service Error for record', record.id, ':', mlError.message);
+                // Continue with update even if ML fails
+              }
+            }
+
+            await this.prisma.predictionInputReverse.update({
+              where: { id: record.id },
+              data: updateData
+            });
+            reverseUpdateCount++;
+          }
+
+          // Update each PredictionInputScore record individually to recalculate interaction features
+          let scoreUpdateCount = 0;
+          for (const record of scoreRecords) {
+            const updateData: any = {
+              partTimeHours: hours,
+              // Recalculate interaction features
+              financialSupportXPartTime: (record.financialSupport !== null && hours !== null) 
+                ? record.financialSupport * hours : null,
+              studyHoursXPartTime: (record.weeklyStudyHours !== null && hours !== null) 
+                ? record.weeklyStudyHours * hours : null,
+            };
+
+            await this.prisma.predictionInputScore.update({
+              where: { id: record.id },
+              data: updateData
+            });
+            scoreUpdateCount++;
+          }
+
+          updates.push({
+            semester: semesterKey,
+            hours,
+            reverseUpdated: reverseUpdateCount,
+            scoreUpdated: scoreUpdateCount,
+            mlPredictionResults: mlPredictionResults.length > 0 ? mlPredictionResults : undefined
+          });
+        }
+
+        return {
+          success: true,
+          message: `Đã cập nhật part-time hours và tự động dự đoán cho ${updates.length} học kỳ`,
+          data: { viewMode, updates }
+        };
+
+      } else {
+        // Update part-time hours for all records
+        // Get all existing records to recalculate interaction features
+        const reverseRecords = await this.prisma.predictionInputReverse.findMany({
+          where: { userId }
+        });
+
+        const scoreRecords = await this.prisma.predictionInputScore.findMany({
+          where: { userId }
+        });
+
+        // Update each PredictionInputReverse record individually to recalculate interaction features
+        let reverseUpdateCount = 0;
+        const mlPredictionResults: any[] = [];
+        
+        for (const record of reverseRecords) {
+          const updateData: any = {
+            partTimeHours: partTimeHours,
+            // Recalculate interaction features
+            financialSupportXPartTime: (partTimeHours !== null && record.financialSupport !== null) 
+              ? partTimeHours * record.financialSupport : null,
+            rawScoreXPartTime: (record.rawScore !== null && partTimeHours !== null) 
+              ? record.rawScore * partTimeHours : null,
+            rawScoreXPartTimeFinancial: (record.rawScore !== null && partTimeHours !== null && record.financialSupport !== null) 
+              ? record.rawScore * partTimeHours * record.financialSupport : null,
+          };
+
+          // Check if we have enough data for ML prediction
+          if (record.rawScore && record.rawScore > 0 && 
+              record.financialSupport !== null && 
+              record.emotionalSupport !== null) {
+            
+            try {
+              // Call ML service for reverse prediction
+              const mlResult = await this.callMLReverseService({
+                semester_number: record.semesterNumber,
+                course_code: record.courseCode,
+                study_format: record.studyFormat,
+                credits_unit: record.creditsUnit,
+                raw_score: record.rawScore,
+                part_time_hours: partTimeHours,
+                financial_support: record.financialSupport,
+                emotional_support: record.emotionalSupport,
+              });
+
+              // Add ML predictions to update data
+              updateData.predictedWeeklyStudyHours = mlResult.predicted_weekly_study_hours;
+              updateData.predictedAttendancePercentage = mlResult.predicted_attendance_percentage;
+              
+              mlPredictionResults.push({
+                recordId: record.id,
+                courseCode: record.courseCode,
+                predictions: mlResult
+              });
+
+            } catch (mlError) {
+              console.error('ML Service Error for record', record.id, ':', mlError.message);
+              // Continue with update even if ML fails
+            }
+          }
+
+          await this.prisma.predictionInputReverse.update({
+            where: { id: record.id },
+            data: updateData
+          });
+          reverseUpdateCount++;
+        }
+
+        // Update each PredictionInputScore record individually to recalculate interaction features
+        let scoreUpdateCount = 0;
+        for (const record of scoreRecords) {
+          const updateData: any = {
+            partTimeHours: partTimeHours,
+            // Recalculate interaction features
+            financialSupportXPartTime: (record.financialSupport !== null && partTimeHours !== null) 
+              ? record.financialSupport * partTimeHours : null,
+            studyHoursXPartTime: (record.weeklyStudyHours !== null && partTimeHours !== null) 
+              ? record.weeklyStudyHours * partTimeHours : null,
+          };
+
+          await this.prisma.predictionInputScore.update({
+            where: { id: record.id },
+            data: updateData
+          });
+          scoreUpdateCount++;
+        }
+
+        return {
+          success: true,
+          message: `Đã cập nhật part-time hours (${partTimeHours}h) và tự động dự đoán cho toàn bộ dữ liệu`,
+          data: { 
+            viewMode, 
+            partTimeHours,
+            reverseRecordsUpdated: reverseUpdateCount, 
+            scoreRecordsUpdated: scoreUpdateCount,
+            mlPredictionResults: mlPredictionResults.length > 0 ? mlPredictionResults : undefined
+          }
+        };
+      }
+
+    } catch (error) {
+      console.error('Error updating part-time hours with auto prediction:', error);
+      throw new Error('Lỗi khi cập nhật part-time hours và tự động dự đoán: ' + error.message);
     }
   }
 }

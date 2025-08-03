@@ -5,33 +5,44 @@ This is an academic grade prediction system combining NestJS backend, React fron
 ## Architecture Overview
 
 **Three-tier microservices architecture:**
-- `backend/` - NestJS API (port 3000) with Prisma ORM → PostgreSQL
-- `frontend/` - React + TypeScript + Vite SPA (port 5173) with survey forms and predictions  
+- `backend/` - NestJS API (port 3000) with Prisma ORM → PostgreSQL  
+- `frontend/` - React + TypeScript + Vite SPA (port 5173) with survey forms and predictions
 - `ml_service/` - FastAPI service (port 8000) with PyTorch models for bidirectional prediction
 
 **Data flow:** Frontend collects survey responses → Backend stores via Prisma → ML service processes with PyTorch → Results returned to frontend
 
-**Critical note:** ML service integration is architecturally ready but not yet implemented in backend. Models exist and work standalone.
+**Critical note:** ML service integration exists via HTTP calls but is not fully integrated with prediction workflows. Backend includes Gemini AI integration for survey analysis.
 
 ## Key Data Models (Prisma Schema)
 
-The system uses four main models representing the prediction pipeline:
+The system uses six main models representing the prediction and survey pipeline:
 
 ```typescript
-// Raw academic records imported from student systems
+// Raw academic records imported from student systems  
 ScoreRecord: { userId, studentId, year, semesterNumber, courseCode, rawScore, convertedScore }
 
 // Reverse prediction: given grades, predict study habits
-PredictionInputReverse: { rawScore, partTimeHours, financialSupport, emotionalSupport, mode: "reverse" }
+PredictionInputReverse: { userId, year, semesterNumber, courseCode, rawScore, partTimeHours, 
+                         financialSupport, emotionalSupport, predictedWeeklyStudyHours, 
+                         predictedAttendancePercentage, mode: "reverse" }
 
-// Forward prediction: given study habits, predict grades  
-PredictionInputScore: { weeklyStudyHours, attendancePercentage, partTimeHours, mode: "forward" }
+// Forward prediction: given study habits, predict grades
+PredictionInputScore: { userId, reverseInputId?, year, semesterNumber, weeklyStudyHours, 
+                       attendancePercentage, partTimeHours, mode: "forward" }
 
 // Final prediction results linked to inputs
-PredictedScore: { inputScoreId, predictedScore }
+PredictedScore: { userId, inputScoreId, scoreRecordId?, predictedScore }
+
+// Survey system for collecting student responses
+SurveyQuestion: { text, category: "EMOTIONAL"|"FINANCIAL"|"GENERAL", options, isActive, allowMultiple }
+SurveyResponse: { userId, submittedAt, answers[] }
+SurveyAnalysisResult: { userId, emotionalLevel, financialLevel } // AI-analyzed support levels
 ```
 
-**Critical pattern:** The `mode` field determines prediction direction - always set to "reverse" or "forward"
+**Critical patterns:** 
+- The `mode` field determines prediction direction - always set to "reverse" or "forward"
+- All models include `year` field for academic year tracking (added in latest migration)
+- Feature engineering fields (like `rawScoreXPartTime`) are pre-computed and stored
 
 ## Development Workflows
 
@@ -107,12 +118,25 @@ The survey system in `SurveyPage.tsx` follows this pattern:
 **Asset imports:** Images stored in `src/assets/` and imported as ES modules
 **State management:** useState for local form state, no global state management
 
+## External Service Integration
+
+**Gemini AI for Survey Analysis:**
+- Backend uses `axios` to call Google's Gemini API in `survey-analysis.service.ts`
+- Requires `GEMINI_API_KEY` environment variable
+- Automatically analyzes survey responses to extract emotional/financial support levels
+- Pattern: Sends formatted survey answers → Gemini returns JSON with numeric scores (0-3 scale)
+
+**ML Service Communication:**
+- Endpoints: `/predict` (forward) and `/reverse` (reverse prediction)
+- Models: `best_mlp_model_2output_2_8_2025.pt` with separate preprocessors
+- Backend ready for HTTP integration but not yet connected to prediction workflows
+
 ## Critical Integration Points
 
-**Backend-ML communication:** Backend likely calls ML service via HTTP (check for axios/fetch in services)
-**CORS configuration:** ML service allows all origins (`allow_origins=["*"]`) - restrict in production
 **Database connection:** Uses environment variable `DATABASE_URL` for PostgreSQL connection
 **Frontend API:** Axios instance configured for `http://localhost:3000` with credentials enabled
+**CORS configuration:** ML service allows all origins (`allow_origins=["*"]`) - restrict in production
+**Module structure:** Backend uses NestJS modules (User, Survey, ScoreRecord, PredictionReverse, etc.) with shared PrismaService
 
 ## Testing & Quality
 
