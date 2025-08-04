@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Studywithme.css";
+import TaskModal from "../components/TaskModal";
 
 // Placeholder SVG data URLs for missing icons
 const backIcon = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IndoaXRlIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIwIDEySDRsNS01djNIMjB2NGgtMTF2M2w1LTV6Ii8+PC9zdmc+";
@@ -29,6 +30,13 @@ const Studywithme: React.FC = () => {
   // Music player state
   const [currentSong, setCurrentSong] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  
+  // Stats panel toggle state
+  const [isStatsPanelVisible, setIsStatsPanelVisible] = useState(true);
+  
+  // Task modal state
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState({ id: 1, title: "Task 1" });
 
   // Timer durations in seconds
   const durations = {
@@ -167,6 +175,16 @@ const Studywithme: React.FC = () => {
 
   const progress = ((durations[mode] - timeLeft) / durations[mode]) * 100;
 
+  // Handle task button click
+  const handleTaskClick = (taskId: number, taskTitle: string) => {
+    setSelectedTask({ id: taskId, title: taskTitle });
+    setIsTaskModalOpen(true);
+  };
+
+  const closeTaskModal = () => {
+    setIsTaskModalOpen(false);
+  };
+
   return (
     <div className="study-with-me-container">
       
@@ -185,9 +203,21 @@ const Studywithme: React.FC = () => {
               Study With Me - Focus Session
             </div>
           </div>
-          <div className="session-counter">
-            <div className="session-label">Sessions Completed</div>
-            <div className="session-count">{sessionCount}</div>
+          
+          <div className="header-right">
+            <div className="session-counter">
+              <div className="session-label">Sessions Completed</div>
+              <div className="session-count">{sessionCount}</div>
+            </div>
+            
+            {/* Toggle Stats Panel Button */}
+            <button
+              onClick={() => setIsStatsPanelVisible(!isStatsPanelVisible)}
+              className="toggle-stats-button"
+              title={isStatsPanelVisible ? "Hide Stats Panel" : "Show Stats Panel"}
+            >
+              {isStatsPanelVisible ? "👁️‍🗨️ Hide Stats" : "👁️ Show Stats"}
+            </button>
           </div>
         </div>
       </div>
@@ -421,58 +451,77 @@ const Studywithme: React.FC = () => {
         </div>
 
         {/* Right Panel - Stats & Settings */}
-        <div className="stats-panel">
-          <div className="stats-card">
-            <h3 className="stats-title">📊 Today's Stats</h3>
-            
-            <div className="stats-items">
-              <div className="stat-item">
-                <span>Pomodoros:</span>
-                <span className="stat-value">{sessionCount}</span>
+        {isStatsPanelVisible && (
+          <div className="stats-panel">
+            <div className="stats-card">
+              <h3 className="stats-title">📊 Today's Stats</h3>
+              
+              <div className="stats-items">
+                <div className="stat-item">
+                  <span>Pomodoros:</span>
+                  <span className="stat-value">{sessionCount}</span>
+                </div>
+                <div className="stat-item">
+                  <span>Focus Time:</span>
+                  <span className="stat-value">{Math.floor(sessionCount * 25)} min</span>
+                </div>
+                <div className="stat-item">
+                  <span>Current Streak:</span>
+                  <span className="stat-value">{sessionCount > 0 ? '🔥 ' + sessionCount : '0'}</span>
+                </div>
               </div>
-              <div className="stat-item">
-                <span>Focus Time:</span>
-                <span className="stat-value">{Math.floor(sessionCount * 25)} min</span>
-              </div>
-              <div className="stat-item">
-                <span>Current Streak:</span>
-                <span className="stat-value">{sessionCount > 0 ? '🔥 ' + sessionCount : '0'}</span>
+
+              <div className="progress-container">
+                <div className="progress-label">Progress</div>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill"
+                    style={{ width: `${Math.min((sessionCount / 8) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <div className="progress-text">{sessionCount}/8 daily goal</div>
               </div>
             </div>
 
-            <div className="progress-container">
-              <div className="progress-label">Progress</div>
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill"
-                  style={{ width: `${Math.min((sessionCount / 8) * 100, 100)}%` }}
-                ></div>
+            <div className="stats-card">
+              <h3 className="stats-title">⚙️ Task</h3>
+              
+              <div className="settings-buttons">
+                <button 
+                  className="settings-button"
+                  onClick={() => handleTaskClick(1, "Task 1")}
+                >
+                  🔊 Task 1
+                </button>
+                <button 
+                  className="settings-button"
+                  onClick={() => handleTaskClick(2, "Task 2")}
+                >
+                  🌙 Task 2
+                </button>
+                <button 
+                  className="settings-button"
+                  onClick={() => handleTaskClick(3, "Task 3")}
+                >
+                  📈 Task 3
+                </button>
+                <button className="settings-button">
+                  <img src={settingsIcon} alt="Settings" className="settings-icon" />
+                  More Settings
+                </button>
               </div>
-              <div className="progress-text">{sessionCount}/8 daily goal</div>
             </div>
           </div>
-
-          <div className="stats-card">
-            <h3 className="stats-title">⚙️ Quick Settings</h3>
-            
-            <div className="settings-buttons">
-              <button className="settings-button">
-                🔊 Volume Control
-              </button>
-              <button className="settings-button">
-                🌙 Dark Mode
-              </button>
-              <button className="settings-button">
-                📈 View Analytics
-              </button>
-              <button className="settings-button">
-                <img src={settingsIcon} alt="Settings" className="settings-icon" />
-                More Settings
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
+
+      {/* Task Modal */}
+      <TaskModal
+        isOpen={isTaskModalOpen}
+        onClose={closeTaskModal}
+        taskId={selectedTask.id}
+        taskTitle={selectedTask.title}
+      />
     </div>
   );
 };

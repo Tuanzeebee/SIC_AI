@@ -8,6 +8,8 @@ import image1 from "../assets/image 3.png";
 
 export const Home: React.FC = () => {
   const [user, setUser] = useState<any>(null);
+  const [isCheckingSurvey, setIsCheckingSurvey] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -21,10 +23,35 @@ export const Home: React.FC = () => {
     }
   }, []);
 
-  const handleStartPredicting = () => {
+  const handleStartPredicting = async () => {
     if (user) {
-      // If logged in, go to survey
-      window.location.href = '/survey';
+      setIsCheckingSurvey(true);
+      try {
+        // Check if user has survey analysis result
+        const response = await fetch(`http://localhost:3000/api/survey-analysis/${user.id}/latest`, {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.result) {
+          // User has survey analysis result, go to tutorial
+          window.location.href = '/tutorial';
+        } else {
+          // User doesn't have survey analysis result, go to survey
+          window.location.href = '/survey';
+        }
+      } catch (error) {
+        console.error('Error checking survey analysis:', error);
+        // If error, default to survey page
+        window.location.href = '/survey';
+      } finally {
+        setIsCheckingSurvey(false);
+      }
     } else {
       // If not logged in, go to login
       window.location.href = '/login';
@@ -32,6 +59,24 @@ export const Home: React.FC = () => {
   };
   return (
     <div className="home">
+      {/* Video Modal */}
+      {showVideo && (
+        <div className="video-modal-overlay" onClick={() => setShowVideo(false)}>
+          <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="video-close-btn" onClick={() => setShowVideo(false)}>×</button>
+            <iframe
+              width="800"
+              height="450"
+              src="https://www.youtube.com/embed/8zVV1bI8hD8?autoplay=1"
+              title="Demo Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
+      
       <div className="div">
         <div className="overlap">
           <div className="group">
@@ -71,15 +116,25 @@ export const Home: React.FC = () => {
           </p>
 
           <div className="group-3">
-            <button className="overlap-group-wrapper" onClick={handleStartPredicting}>
+            <button 
+              className="overlap-group-wrapper" 
+              onClick={handleStartPredicting}
+              disabled={isCheckingSurvey}
+            >
               <div className="div-wrapper">
                 <div className="text-wrapper-2">
-                  {user ? 'Start Predicting' : 'Đăng nhập'}
+                  {isCheckingSurvey 
+                    ? 'Đang kiểm tra...' 
+                    : (user ? 'Start Predicting' : 'Đăng nhập')
+                  }
                 </div>
               </div>
             </button>
 
-            <button className="overlap-wrapper">
+            <button 
+              className="overlap-wrapper"
+              onClick={() => setShowVideo(true)}
+            >
               <div className="overlap-2">
                 <div className="text-wrapper-3">Watch Demo</div>
               </div>

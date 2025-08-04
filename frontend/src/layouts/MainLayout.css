@@ -35,6 +35,11 @@
   cursor: pointer;
 }
 
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
 .nav-links a {
   margin-left: 20px;
   color: #4a3c8c;
@@ -45,6 +50,113 @@
 
 .nav-links a:hover {
   color: #6b5b95;
+}
+
+/* Feature Dropdown Styles */
+.feature-dropdown-container {
+  position: relative;
+  margin-left: 20px;
+}
+
+.feature-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #4a3c8c;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.feature-link:hover {
+  color: #6b5b95;
+  background-color: #f8f9fa;
+}
+
+.feature-link .dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.3s ease;
+}
+
+.feature-dropdown-container:hover .feature-link .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.feature-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 600px;
+  padding: 20px;
+  /* Add padding to make mouse movement easier */
+  padding-top: 25px;
+}
+
+/* Add invisible bridge between link and dropdown */
+.feature-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background: transparent;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.feature-item:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #a084ca, #6b5b95);
+  border-radius: 8px;
+  color: white;
+}
+
+.feature-content h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a3c8c;
+}
+
+.feature-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
 }
 
 .nav-right {

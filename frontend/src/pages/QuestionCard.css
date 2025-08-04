@@ -294,7 +294,7 @@
   text-align: left;
 }
 
-.back-button {
+.question .back-button {
   position: absolute;
   top: 5vh;
   left: 5%;
@@ -302,21 +302,24 @@
   padding: 0 20px;
   border: 1px solid #dddddd;
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: #ffffff !important;
   box-shadow: 0px 2px 8px #00000014;
   font-family: "Poppins-Medium", Helvetica;
   font-size: 16px;
   font-weight: 500;
-  color: #333333;
+  color: #333333 !important;
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  backdrop-filter: none !important;
 }
 
-.back-button:hover {
-  background-color: #f0f0f0;
+.question .back-button:hover {
+  background-color: #f0f0f0 !important;
+  transform: none !important;
+  box-shadow: 0px 2px 8px #00000014 !important;
 }
 
 .vector {

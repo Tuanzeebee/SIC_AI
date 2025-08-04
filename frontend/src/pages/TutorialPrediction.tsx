@@ -192,11 +192,28 @@ export const Tutorial = (): React.JSX.Element => {
     }
   };
 
-  // Auto-fetch semesters when component mounts
+  // Auto-fetch semesters and score records when component mounts
   useEffect(() => {
-    fetchAvailableSemesters();
-    fetchAcademicStatistics();
-    checkPartTimeHoursData(); // Check partTimeHours data when component mounts
+    const initializeData = async () => {
+      try {
+        await fetchAvailableSemesters();
+        await fetchAcademicStatistics();
+        await checkPartTimeHoursData(); // Check partTimeHours data when component mounts
+        
+        // Also fetch existing score records if user is logged in
+        const userId = getUserId();
+        if (userId) {
+          const scoreRecordsResult = await scoreRecordApi.getByUserId(userId);
+          if (scoreRecordsResult.success) {
+            setScoreRecords(scoreRecordsResult.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing data:', error);
+      }
+    };
+    
+    initializeData();
   }, []); // Empty dependency array means this runs once when component mounts
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,15 +250,19 @@ export const Tutorial = (): React.JSX.Element => {
       const result = await scoreRecordApi.uploadCsv(userId, file);
       
       if (result.success) {
-        showSuccess('Upload file thành công!');
+        showSuccess('Upload file thành công! Đang tải lại trang...');
         setFile(null);
         // Reset file input
         const fileInput = document.getElementById('csv-file-input') as HTMLInputElement;
         if (fileInput) {
           fileInput.value = '';
         }
-        // Refresh academic statistics after upload
-        await fetchAcademicStatistics();
+        
+        // Add a delay to show success message, then reload page
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500); // 1.5 second delay to show success message
+        
       } else {
         showError(result.message || 'Lỗi khi tải lên file');
       }
@@ -303,11 +324,11 @@ export const Tutorial = (): React.JSX.Element => {
       if (viewMode === 'semester') {
         // Show success message for semester mode with prediction info
         const predictionCount = updateResult.data?.predictionResult?.data?.length || 0;
-        showSuccess(`Đã tải và lưu dữ liệu theo kỳ thành công${predictionCount > 0 ? ` và tự động dự đoán ${predictionCount} môn học` : ''}`);
+        showSuccess(`Đã lưu dữ liệu theo kỳ thành công${predictionCount > 0 ? ` và tự động dự đoán ${predictionCount} môn học` : ''}!`);
       } else {
         // Full mode - show all data with prediction info
         const predictionCount = updateResult.data?.predictionResult?.data?.length || 0;
-        showSuccess(`Đã tải và lưu toàn bộ dữ liệu thành công${predictionCount > 0 ? ` và tự động dự đoán ${predictionCount} môn học` : ''}`);
+        showSuccess(`Đã lưu toàn bộ dữ liệu thành công${predictionCount > 0 ? ` và tự động dự đoán ${predictionCount} môn học` : ''}!`);
       }
 
       console.log('ScoreRecords:', filteredScoreRecords);
@@ -322,6 +343,8 @@ export const Tutorial = (): React.JSX.Element => {
       } else {
         setPredictionResults([]);
       }
+
+      // Don't reload page - just update the data in memory for better UX
 
     } catch (error: any) {
       console.error('Fetch data error:', error);
@@ -392,12 +415,12 @@ export const Tutorial = (): React.JSX.Element => {
             showError(`Có ${predictionResult.errorCount} lỗi trong quá trình dự đoán`);
           }
           
-          showSuccess(`✅ Hoàn thành workflow: ${workflowDetails.join(' | ')}`);
+          showSuccess(`✅ Hoàn thành workflow: ${workflowDetails.join(' | ')}. Đang chuyển trang...`);
           
           // Navigate to next page after successful workflow
           setTimeout(() => {
             window.location.href = '/pre-learning-path';
-          }, 4000); // 4 seconds to show all messages
+          }, 3000); // 3 seconds to show all messages
         } else {
           throw new Error(workflowResult.error || 'Workflow thất bại');
         }
@@ -671,7 +694,7 @@ export const Tutorial = (): React.JSX.Element => {
                   <div className="div-7">
                     <div className="div-14">
                       <div className="text-wrapper-15">⭐</div>
-                      <div className="text-wrapper-16">GPA hiện tại (4.0)</div>
+                      <div className="text-wrapper-16">GPA hiện tại</div>
                     </div>
                     <div className="text-wrapper-17">{currentGPA.toFixed(2)}</div>
                   </div>
