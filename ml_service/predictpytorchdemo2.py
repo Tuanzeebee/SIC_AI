@@ -122,7 +122,7 @@ model_reverse.eval()
 
 # ─── Load predict model ───────────────────────────────
 model_predict = MLPDeepFull(predict_input_dim)
-model_predict.load_state_dict(torch.load("best_mlp_model_weighted_2_8_2025.pt", map_location=device))
+model_predict.load_state_dict(torch.load("best_mlp_model_weighted_2_8_2025_1.pt", map_location=device))
 model_predict.to(device)
 model_predict.eval()
 # ───────────────────────────────────────────────────────────────

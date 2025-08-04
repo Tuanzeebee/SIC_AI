@@ -86,11 +86,6 @@ export const CourseDetail: React.FC = () => {
 
         {/* 3. Chương trình học DTU */}
         <div className="overlap-16">
-          <div className="rectangle-7" />
-          <div className="text-wrapper-27">2</div>
-          <p className="text-wrapper-28">Part II Data Storage and Big Data Analytics</p>
-          <div className="text-wrapper-29">4 hours</div>
-          <div className="rectangle-8" />
           <div className="rectangle-10" />
           <div className="text-wrapper-27">2</div>
           <div className="text-wrapper-28">Introduction to DBMS</div>
